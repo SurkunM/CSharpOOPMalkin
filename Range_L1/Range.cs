@@ -152,4 +152,21 @@ internal class Range
     {
         Console.WriteLine("{0} - {1}", FirstFrom, FirstTo);
     }
+
+    static public void PrintRangeArray(Range[] rangeArray)
+    {
+        if (rangeArray.Length == 0)
+        {
+            Console.WriteLine("Интервалов нет");
+        }
+        else if (rangeArray.Length == 1)
+        {
+            rangeArray[0].PrintRangeInterval();
+        }
+        else
+        {
+            rangeArray[0].PrintRangeInterval();
+            rangeArray[1].PrintRangeInterval();
+        }
+    }
 }

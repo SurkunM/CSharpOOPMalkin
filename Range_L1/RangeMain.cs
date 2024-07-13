@@ -5,10 +5,10 @@ internal class RangeMain
     static void Main(string[] args)
     {
         double firstFrom = 0;
-        double firstTo = 10;
+        double firstTo = 15;
 
         double secondFrom = 10;
-        double secondTo = 25;
+        double secondTo = 20;
 
         Range firstRange = new Range(firstFrom, firstTo);
 
@@ -38,6 +38,9 @@ internal class RangeMain
         }
 
         Range[] rangeCombining = new Range(firstRange, secondRange).CombiningRange();
+        Range.PrintRangeArray(rangeCombining);
+
         Range[] rangeSubtraction = new Range(firstRange, secondRange).SubtractionRange();
+        Range.PrintRangeArray(rangeSubtraction);
     }
 }
