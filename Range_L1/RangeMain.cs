@@ -4,13 +4,13 @@ internal class RangeMain
 {
     static void Main(string[] args)
     {
-        double firstFrom = 0;
-        double firstTo = 15;
+        double from1 = 0;
+        double to1 = 15;
 
-        double secondFrom = 10;
-        double secondTo = 20;
+        double from2 = 10;
+        double to2 = 20;
 
-        Range firstRange = new Range(firstFrom, firstTo);
+        Range firstRange = new Range(from1, to1);
 
         double number = 5;
 
@@ -24,7 +24,7 @@ internal class RangeMain
 
         }
 
-        Range secondRange = new Range(secondFrom, secondTo);
+        Range secondRange = new Range(from2, to2);
 
         Range rangeInterval = new Range(firstRange, secondRange).GetIntersectionRange();
 

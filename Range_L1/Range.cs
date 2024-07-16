@@ -145,7 +145,6 @@ internal class Range
     public void PrintRangeLength()
     {
         Console.WriteLine("Range length = {0}", GetLength());
-
     }
 
     public void PrintRangeInterval()
@@ -153,7 +152,7 @@ internal class Range
         Console.WriteLine("{0} - {1}", FirstFrom, FirstTo);
     }
 
-    static public void PrintRangeArray(Range[] rangeArray)
+    public static void PrintRangeArray(Range[] rangeArray)
     {
         if (rangeArray.Length == 0)
         {
