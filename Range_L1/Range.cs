@@ -8,61 +8,43 @@ namespace Range_L1;
 
 internal class Range
 {
-    public Range? FirstRange { get; set; }
+    public double From { get; set; }
 
-    public double FirstFrom { get; set; }
-
-    public double FirstTo { get; set; }
-
-    public Range? SecondRange { get; set; }
-
-    public double SecondFrom { get; set; }
-
-    public double SecondTo { get; set; }
+    public double To { get; set; }
 
     public Range(double from, double to)
     {
-        FirstFrom = from;
-        FirstTo = to;
+        From = from;
+        To = to;
     }
 
-    public Range(Range firstRange, Range secondRange)
+    public Range? GetIntersection(Range range2)
     {
-        FirstRange = firstRange;
-
-        FirstFrom = FirstRange.FirstFrom;
-        FirstTo = FirstRange.FirstTo;
-
-        SecondRange = secondRange;
-
-        SecondFrom = SecondRange.FirstFrom;
-        SecondTo = SecondRange.FirstTo;
-    }
-
-    public Range GetIntersectionRange()
-    {
-        if (FirstTo > SecondFrom && SecondTo > FirstFrom)
+        if (To > range2.From && range2.To > From)
         {
-            if (FirstFrom < SecondFrom)
+            if (From < range2.From)
             {
-                if (FirstTo < SecondTo)
+                if (To < range2.To)
                 {
-                    return new Range(SecondFrom, FirstTo);
+                    return new Range(range2.From, To);
                 }
-                else
+
+                if (To >= range2.To)
                 {
-                    return new Range(SecondFrom, SecondTo);
+                    return new Range(range2.From, range2.To);
                 }
             }
-            else
+
+            if (From >= range2.From)
             {
-                if (FirstTo < SecondTo)
+                if (To < range2.To)
                 {
-                    return new Range(FirstFrom, FirstTo);
+                    return new Range(From, To);
                 }
-                else
+
+                if (To >= range2.To)
                 {
-                    return new Range(FirstFrom, SecondTo);
+                    return new Range(From, range2.To);
                 }
             }
         }
@@ -70,102 +52,86 @@ internal class Range
         return null;
     }
 
-    public Range[] CombiningRange()
+    public Range[] GetCombining(Range range2)
     {
-        if (FirstTo > SecondFrom && SecondTo > FirstFrom)
+        if (To > range2.From && range2.To > From)
         {
-            if (FirstFrom < SecondFrom)
+            if (From < range2.From)
             {
-                if (FirstTo > SecondTo)
+                if (To > range2.To)
                 {
-                    return [new Range(FirstFrom, FirstTo)];
+                    return [new Range(From, To)];
                 }
-                else
+
+                if (To <= range2.To)
                 {
-                    return [new Range(FirstFrom, SecondTo)];
+                    return [new Range(From, range2.To)];
                 }
             }
-            else
+
+            if (From >= range2.From)
             {
-                if (FirstTo > SecondTo)
+                if (To > range2.To)
                 {
-                    return [new Range(SecondFrom, FirstTo)];
+                    return [new Range(range2.From, To)];
                 }
-                else
+
+                if (To <= range2.To)
                 {
-                    return [new Range(SecondFrom, SecondTo)];
+                    return [new Range(range2.From, range2.To)];
                 }
             }
         }
 
-        return [FirstRange, SecondRange];
+        return [new Range(From, To), range2];
     }
 
-    public Range[] SubtractionRange()
+    public Range[] GetSubtraction(Range range2)
     {
-        if (FirstTo > SecondFrom && SecondTo > FirstFrom)
+        if (To > range2.From && range2.To > From)
         {
-            if (FirstFrom < SecondFrom)
+            if (From < range2.From)
             {
-                if (FirstTo > SecondTo)
+                if (To > range2.To)
                 {
-                    return [new Range(FirstFrom, SecondFrom), new Range(SecondTo, FirstTo)];
+                    return [new Range(From, range2.From), new Range(range2.To, To)];
                 }
-                else
+
+                if (To <= range2.To)
                 {
-                    return [new Range(FirstFrom, SecondFrom)];
+                    return [new Range(From, range2.From)];
                 }
             }
-            else
+
+            if (From >= range2.From)
             {
-                if (FirstTo > SecondTo)
+                if (To > range2.To)
                 {
-                    return [new Range(SecondTo, FirstTo)];
+                    return [new Range(range2.To, To)];
                 }
-                else
+
+                if (To <= range2.To)
                 {
                     return [];
                 }
             }
         }
 
-        return [FirstRange];
+        return [new Range(From, To)];
     }
 
     public double GetLength()
     {
-        return FirstTo - FirstFrom;
+        return To - From;
     }
 
     public bool IsInside(double number)
     {
-        return number > FirstFrom && number < FirstTo ? true : false;
+        return number >= From && number <= To;
     }
 
-    public void PrintRangeLength()
+    public override string? ToString()
     {
-        Console.WriteLine("Range length = {0}", GetLength());
-    }
-
-    public void PrintRangeInterval()
-    {
-        Console.WriteLine("{0} - {1}", FirstFrom, FirstTo);
-    }
-
-    public static void PrintRangeArray(Range[] rangeArray)
-    {
-        if (rangeArray.Length == 0)
-        {
-            Console.WriteLine("Интервалов нет");
-        }
-        else if (rangeArray.Length == 1)
-        {
-            rangeArray[0].PrintRangeInterval();
-        }
-        else
-        {
-            rangeArray[0].PrintRangeInterval();
-            rangeArray[1].PrintRangeInterval();
-        }
-    }
+        return $"({From}; {To})".ToString();
+    }   
 }
