@@ -52,9 +52,9 @@ internal class Range
         return null;
     }
 
-    public Range[] GetCombining(Range range2)
+    public Range[] GetUnification(Range range2)
     {
-        if (To > range2.From && range2.To > From)
+        if (To >= range2.From && range2.To >= From)
         {
             if (From < range2.From)
             {
@@ -86,7 +86,7 @@ internal class Range
         return [new Range(From, To), range2];
     }
 
-    public Range[] GetSubtraction(Range range2)
+    public Range[] GetDifference(Range range2)
     {
         if (To > range2.From && range2.To > From)
         {
@@ -133,5 +133,5 @@ internal class Range
     public override string? ToString()
     {
         return $"({From}; {To})".ToString();
-    }   
+    }
 }

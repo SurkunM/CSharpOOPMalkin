@@ -17,7 +17,7 @@ internal class RangeMain
         }
     }
 
-    public static void PrintIntersection(Range range)
+    public static void PrintIntersection(Range? range)
     {
         if (range == null)
         {
@@ -29,27 +29,22 @@ internal class RangeMain
         }
     }
 
-    public static void PrintRangesArray(Range[] rangeArray)
+    public static void PrintRangesArray(Range[] rangesArray)
     {
-        if (rangeArray.Length == 0)
+        int i = 1;
+
+        foreach (Range range in rangesArray)
         {
-            Console.WriteLine("Диапазонов нет");
-        }
-        else if (rangeArray.Length == 1)
-        {
-            Console.WriteLine(rangeArray[0].ToString());
-        }
-        else
-        {
-            Console.WriteLine(rangeArray[0].ToString());
-            Console.WriteLine(rangeArray[1].ToString());
+            Console.WriteLine("Диапазон {0} = {1}", i, range.ToString());
+
+            i++;
         }
     }
 
     static void Main(string[] args)
     {
         double from1 = 0;
-        double to1 = 15;
+        double to1 = 20;
         double number = 5;
 
         Range range1 = new Range(from1, to1);
@@ -57,18 +52,18 @@ internal class RangeMain
         PrintIsInside(range1.IsInside(number), range1.GetLength());
 
         double from2 = 10;
-        double to2 = 20;
+        double to2 = 15;
 
         Range range2 = new Range(from2, to2);
 
-        PrintIntersection(range1.GetIntersection(range2)!);
+        PrintIntersection(range1.GetIntersection(range2));
 
-        Range[] rangeCombining = new Range(from1, to1).GetCombining(range2);
+        Range[] rangesUnification = new Range(from1, to1).GetUnification(range2);
 
-        PrintRangesArray(rangeCombining);
+        PrintRangesArray(rangesUnification);
 
-        Range[] rangeSubtraction = new Range(from1, to1).GetSubtraction(range2);
+        Range[] rangesDifference = new Range(from1, to1).GetDifference(range2);
 
-        PrintRangesArray(rangeSubtraction);
+        PrintRangesArray(rangesDifference);
     }
 }
