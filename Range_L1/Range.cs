@@ -132,6 +132,6 @@ internal class Range
 
     public override string? ToString()
     {
-        return $"({From}; {To})".ToString();
+        return $"({From}; {To})";
     }
 }

@@ -25,7 +25,7 @@ internal class RangeMain
         }
         else
         {
-            Console.WriteLine("Диапазон пересечения {0}", range.ToString());
+            Console.WriteLine("Диапазон пересечения {0}", range);
         }
     }
 
@@ -35,7 +35,7 @@ internal class RangeMain
 
         foreach (Range range in rangesArray)
         {
-            Console.WriteLine("Диапазон {0} = {1}", i, range.ToString());
+            Console.WriteLine("Диапазон {0} = {1}", i, range);
 
             i++;
         }
