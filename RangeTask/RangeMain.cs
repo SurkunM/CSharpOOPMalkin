@@ -1,7 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-using System;
-
-namespace Range_L1;
+﻿namespace Range_L1;
 
 internal class RangeMain
 {
