@@ -1,4 +1,4 @@
-﻿namespace Range_L1;
+﻿namespace RangeTask;
 
 internal class Range
 {
@@ -14,75 +14,27 @@ internal class Range
 
     public Range? GetIntersection(Range range2)
     {
-        if (To > range2.From && range2.To > From)
+        if (Math.Max(From, range2.From) < Math.Min(To, range2.To))
         {
-            if (From < range2.From)
-            {
-                if (To < range2.To)
-                {
-                    return new Range(range2.From, To);
-                }
-
-                if (To >= range2.To)
-                {
-                    return new Range(range2.From, range2.To);
-                }
-            }
-
-            if (From >= range2.From)
-            {
-                if (To < range2.To)
-                {
-                    return new Range(From, To);
-                }
-
-                if (To >= range2.To)
-                {
-                    return new Range(From, range2.To);
-                }
-            }
+            return new Range(Math.Max(From, range2.From), Math.Min(To, range2.To));
         }
 
         return null;
     }
 
-    public Range[] GetUnification(Range range2)
+    public Range[] GetUnion(Range range2)
     {
-        if (To >= range2.From && range2.To >= From)
+        if (Math.Max(From, range2.From) <= Math.Min(To, range2.To))
         {
-            if (From < range2.From)
-            {
-                if (To > range2.To)
-                {
-                    return [new Range(From, To)];
-                }
-
-                if (To <= range2.To)
-                {
-                    return [new Range(From, range2.To)];
-                }
-            }
-
-            if (From >= range2.From)
-            {
-                if (To > range2.To)
-                {
-                    return [new Range(range2.From, To)];
-                }
-
-                if (To <= range2.To)
-                {
-                    return [new Range(range2.From, range2.To)];
-                }
-            }
+            return [new Range(Math.Min(From, range2.From), Math.Max(To, range2.To))];
         }
 
-        return [new Range(From, To), range2];
+        return [new Range(From, To), new Range(range2.From, range2.To)];
     }
 
     public Range[] GetDifference(Range range2)
     {
-        if (To > range2.From && range2.To > From)
+        if (Math.Max(From, range2.From) < Math.Min(To, range2.To))
         {
             if (From < range2.From)
             {
@@ -126,6 +78,6 @@ internal class Range
 
     public override string? ToString()
     {
-        return $"({From}; {To})";
+        return $"({From}; {To})".ToString();
     }
 }

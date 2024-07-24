@@ -1,4 +1,4 @@
-﻿namespace Range_L1;
+﻿namespace RangeTask;
 
 internal class RangeMain
 {
@@ -22,7 +22,7 @@ internal class RangeMain
         }
         else
         {
-            Console.WriteLine("Диапазон пересечения {0}", range);
+            Console.WriteLine("Диапазон пересечения {0}", range.ToString());
         }
     }
 
@@ -32,7 +32,7 @@ internal class RangeMain
 
         foreach (Range range in rangesArray)
         {
-            Console.WriteLine("Диапазон {0} = {1}", i, range);
+            Console.WriteLine("Диапазон {0} = {1}", i, range.ToString());
 
             i++;
         }
@@ -40,27 +40,18 @@ internal class RangeMain
 
     static void Main(string[] args)
     {
-        double from1 = 0;
-        double to1 = 20;
-        double number = 5;
+        Range range1 = new Range(0, 20);
 
-        Range range1 = new Range(from1, to1);
+        PrintIsInside(range1.IsInside(5), range1.GetLength());
 
-        PrintIsInside(range1.IsInside(number), range1.GetLength());
+        Range range = new Range(10, 15);
 
-        double from2 = 10;
-        double to2 = 15;
+        PrintIntersection(range1.GetIntersection(range));
 
-        Range range2 = new Range(from2, to2);
-
-        PrintIntersection(range1.GetIntersection(range2));
-
-        Range[] rangesUnification = new Range(from1, to1).GetUnification(range2);
-
+        Range[] rangesUnification = range1.GetUnion(range);
         PrintRangesArray(rangesUnification);
 
-        Range[] rangesDifference = new Range(from1, to1).GetDifference(range2);
-
+        Range[] rangesDifference = range1.GetDifference(range);
         PrintRangesArray(rangesDifference);
     }
 }
