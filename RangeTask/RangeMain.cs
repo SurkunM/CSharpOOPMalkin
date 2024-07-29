@@ -16,7 +16,7 @@ internal class RangeMain
 
     public static void PrintIntersection(Range? range)
     {
-        if (range == null)
+        if (range is null)
         {
             Console.WriteLine("Диапазоны не пересекаются");
         }
@@ -44,14 +44,14 @@ internal class RangeMain
 
         PrintIsInside(range1.IsInside(5), range1.GetLength());
 
-        Range range = new Range(10, 15);
+        Range range2 = new Range(10, 15);
 
-        PrintIntersection(range1.GetIntersection(range));
+        PrintIntersection(range1.GetIntersection(range2));
 
-        Range[] rangesUnification = range1.GetUnion(range);
+        Range[] rangesUnification = range1.GetUnion(range2);
         PrintRangesArray(rangesUnification);
 
-        Range[] rangesDifference = range1.GetDifference(range);
+        Range[] rangesDifference = range1.GetDifference(range2);
         PrintRangesArray(rangesDifference);
     }
 }

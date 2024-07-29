@@ -4,14 +4,19 @@ internal class VectorMine
 {
     static void Main(string[] args)
     {
-        double[] array = { 0, 3, 1.1, 4.4, 0.4 };
+        double[] array = null;
 
-        Vector vector4 = new Vector(8, array);
+        double[] array2 = { 0, 3, -2, 4, 3 };
 
-       string s = vector4.ToString();
+        Vector vector = null;     
 
+        Vector vector2 = new Vector();
+
+        Vector sum = Vector.GetVectorsSum(vector, vector2);
+
+        double s =  Vector.GetVectorsScalarProduct(vector, vector2);
 
         Console.WriteLine(s);
-
+        Console.WriteLine(vector);
     }
 }

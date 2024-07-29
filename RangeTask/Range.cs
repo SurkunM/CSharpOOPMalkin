@@ -12,51 +12,51 @@ internal class Range
         To = to;
     }
 
-    public Range? GetIntersection(Range range2)
+    public Range? GetIntersection(Range range)
     {
-        if (Math.Max(From, range2.From) < Math.Min(To, range2.To))
+        if (Math.Max(From, range.From) < Math.Min(To, range.To))
         {
-            return new Range(Math.Max(From, range2.From), Math.Min(To, range2.To));
+            return new Range(Math.Max(From, range.From), Math.Min(To, range.To));
         }
 
         return null;
     }
 
-    public Range[] GetUnion(Range range2)
+    public Range[] GetUnion(Range range)
     {
-        if (Math.Max(From, range2.From) <= Math.Min(To, range2.To))
+        if (Math.Max(From, range.From) <= Math.Min(To, range.To))
         {
-            return [new Range(Math.Min(From, range2.From), Math.Max(To, range2.To))];
+            return [new Range(Math.Min(From, range.From), Math.Max(To, range.To))];
         }
 
-        return [new Range(From, To), new Range(range2.From, range2.To)];
+        return [new Range(From, To), new Range(range.From, range.To)];
     }
 
-    public Range[] GetDifference(Range range2)
+    public Range[] GetDifference(Range range)
     {
-        if (Math.Max(From, range2.From) < Math.Min(To, range2.To))
+        if (Math.Max(From, range.From) < Math.Min(To, range.To))
         {
-            if (From < range2.From)
+            if (From < range.From)
             {
-                if (To > range2.To)
+                if (To > range.To)
                 {
-                    return [new Range(From, range2.From), new Range(range2.To, To)];
+                    return [new Range(From, range.From), new Range(range.To, To)];
                 }
 
-                if (To <= range2.To)
+                if (To <= range.To)
                 {
-                    return [new Range(From, range2.From)];
+                    return [new Range(From, range.From)];
                 }
             }
 
-            if (From >= range2.From)
+            if (From >= range.From)
             {
-                if (To > range2.To)
+                if (To > range.To)
                 {
-                    return [new Range(range2.To, To)];
+                    return [new Range(range.To, To)];
                 }
 
-                if (To <= range2.To)
+                if (To <= range.To)
                 {
                     return [];
                 }
