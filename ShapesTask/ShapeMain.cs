@@ -1,4 +1,8 @@
-﻿namespace ShapeTask;
+﻿using ShapesTask.Comparators;
+using ShapesTask.ShapesClasses;
+using ShapesTask.ShapesInterface;
+
+namespace ShapesTask;
 
 internal class ShapeMain
 {
@@ -18,10 +22,12 @@ internal class ShapeMain
 
         IShape[] shapes = { square1, square2, rectangle1, rectangle2, circle1, circle2, triangle1, triangle2 };
 
-        ShapesAreaComparer areaComparer = new ShapesAreaComparer();
-        Array.Sort(shapes, areaComparer);
+        Array.Sort(shapes, new ShapesPerimeterComparer());
+        Array.Sort(shapes, new ShapesAreaComparer());
 
-        Console.WriteLine("Максимальная по величине площадь = {0}", shapes[0]);
-        Console.WriteLine("Вторая по величине площадь = {0}", shapes[1]);
+        int lastIndex = shapes.Length - 1;
+
+        Console.WriteLine("Максимальная по величине площадь = {0}", shapes[lastIndex].GetArea());
+        Console.WriteLine("Второй по величине периметр = {0}", shapes[lastIndex - 1].GetPerimeter());
     }
 }

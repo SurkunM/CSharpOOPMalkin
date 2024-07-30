@@ -10,7 +10,7 @@ internal class VectorMine
 
         Vector vector = null;     
 
-        Vector vector2 = new Vector();
+        //Vector vector2 = new Vector();
 
         Vector sum = Vector.GetVectorsSum(vector, vector2);
 
