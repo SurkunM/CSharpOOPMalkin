@@ -14,12 +14,10 @@ internal class Range
 
     public Range? GetIntersection(Range range)
     {
-        if (Math.Max(From, range.From) < Math.Min(To, range.To))
-        {
-            return new Range(Math.Max(From, range.From), Math.Min(To, range.To));
-        }
+        double maxFrom = Math.Max(From, range.From);
+        double minTo = Math.Min(To, range.To);
 
-        return null;
+        return (maxFrom < minTo) ? new Range(maxFrom, minTo) : null;
     }
 
     public Range[] GetUnion(Range range)
@@ -32,38 +30,19 @@ internal class Range
         return [new Range(From, To), new Range(range.From, range.To)];
     }
 
-    public Range[] GetDifference(Range range)
+    public Range[]? GetDifference(Range range)
     {
-        if (Math.Max(From, range.From) < Math.Min(To, range.To))
+        if (Math.Max(From, range.From) >= Math.Min(To, range.To))
         {
-            if (From < range.From)
-            {
-                if (To > range.To)
-                {
-                    return [new Range(From, range.From), new Range(range.To, To)];
-                }
-
-                if (To <= range.To)
-                {
-                    return [new Range(From, range.From)];
-                }
-            }
-
-            if (From >= range.From)
-            {
-                if (To > range.To)
-                {
-                    return [new Range(range.To, To)];
-                }
-
-                if (To <= range.To)
-                {
-                    return [];
-                }
-            }
+            return [new Range(From, To)];
         }
 
-        return [new Range(From, To)];
+        if (From < range.From)
+        {
+            return (To > range.To) ? [new Range(From, range.From), new Range(range.To, To)] : [new Range(From, range.From)];
+        }
+
+        return (To > range.To) ? [new Range(range.To, To)] : null;
     }
 
     public double GetLength()
@@ -76,8 +55,8 @@ internal class Range
         return number >= From && number <= To;
     }
 
-    public override string? ToString()
+    public override string ToString()
     {
-        return $"({From}; {To})".ToString();
+        return $"({From}; {To})";
     }
 }
