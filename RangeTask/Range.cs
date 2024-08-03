@@ -42,7 +42,7 @@ internal class Range
             return (To > range.To) ? [new Range(From, range.From), new Range(range.To, To)] : [new Range(From, range.From)];
         }
 
-        return (To > range.To) ? [new Range(range.To, To)] : null;
+        return (To > range.To) ? [new Range(range.To, To)] : [];
     }
 
     public double GetLength()

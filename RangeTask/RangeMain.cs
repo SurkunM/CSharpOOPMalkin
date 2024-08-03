@@ -22,42 +22,29 @@ internal class RangeMain
         }
         else
         {
-            Console.WriteLine("Пересечение диапазонов {0}", range);
+            Console.WriteLine("Пересечение диапазонов:");
+            Console.WriteLine(range);
         }
     }
 
-    public static void PrintRangesUnion(Range[] ranges)
+    public static void PrintRangesArray(Range[]? rangesArray)
     {
-        string union = "Объединение";
-
-        PrintRangesArray(ranges, union);
-    }
-
-    public static void PrintRangesDifference(Range[]? ranges)
-    {
-        if (ReferenceEquals(ranges, null))
+        if (rangesArray is null)
         {
-            Console.WriteLine("У разности нет диапазонов");
+            Console.WriteLine("У разности нет диапазонов:");
         }
         else
         {
-            string difference = "Разность";
-
-            PrintRangesArray(ranges, difference);
-        }
-    }
-
-    public static void PrintRangesArray(Range[] rangesArray, string operationName)
-    {
-        foreach (Range range in rangesArray)
-        {
-            Console.WriteLine("{0} диапазонов {1}", operationName, range);
+            foreach (Range range in rangesArray)
+            {
+                Console.WriteLine(range);
+            }
         }
     }
 
     static void Main(string[] args)
     {
-        Range range1 = new Range(0, 20);
+        Range range1 = new Range(5, 20);
 
         PrintIsInside(range1.IsInside(5), range1.GetLength());
 
@@ -66,9 +53,13 @@ internal class RangeMain
         PrintIntersection(range1.GetIntersection(range2));
 
         Range[] rangesUnion = range1.GetUnion(range2);
-        PrintRangesUnion(rangesUnion);
+
+        Console.WriteLine("Объединение диапазонов:");
+        PrintRangesArray(rangesUnion);
 
         Range[]? rangesDifference = range1.GetDifference(range2);
-        PrintRangesDifference(rangesDifference);
+
+        Console.WriteLine("Разность диапазонов:");
+        PrintRangesArray(rangesDifference);
     }
 }
