@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-using System.Runtime.Intrinsics;
-using System.Text;
+﻿using System.Text;
 
 namespace VectorTask;
 
@@ -10,11 +8,11 @@ internal class Vector
 
     private double[]? _vectorComponents;
 
-    public double[]? VectorComponents
+    public double[] VectorComponents
     {
         get
         {
-            return _vectorComponents;
+            return _vectorComponents!;
         }
         set
         {
@@ -66,17 +64,24 @@ internal class Vector
     {
         if (vector is null)
         {
-            throw new ArgumentException(nameof(vector));
+            throw new ArgumentNullException(nameof(vector));
         }
 
         Dimension = vector.Dimension;
 
-        VectorComponents = GetComponentsCopy(vector.VectorComponents);
+        VectorComponents = GetComponentsCopy(vector.VectorComponents, Dimension);
     }
 
     public Vector(double[] components)
     {
-        VectorComponents = GetComponentsCopy(components);
+        if (components is null)
+        {
+            throw new ArgumentNullException(nameof(components));
+        }
+
+        Dimension = components.Length;
+
+        VectorComponents = GetComponentsCopy(components, Dimension);
     }
 
     public Vector(int dimension, double[] components)
@@ -85,34 +90,32 @@ internal class Vector
         {
             throw new ArgumentException(nameof(dimension));
         }
-        else
-        {
-            Dimension = dimension;
-        }
 
-        VectorComponents = GetComponentsCopy(components);
-    }
-
-    private double[] GetComponentsCopy(double[]? components)
-    {
         if (components is null)
         {
             throw new ArgumentNullException(nameof(components));
         }
 
-        double[] vectorComponents = new double[components!.Length];
+        Dimension = dimension;
 
-        for (int i = 0; i < vectorComponents.Length; i++)
+        VectorComponents = GetComponentsCopy(components, Dimension);
+    }
+
+    private static double[] GetComponentsCopy(double[] components, int dimension)
+    {
+        double[] newComponentsArray = new double[dimension];
+
+        for (int i = 0; i < components.Length; i++)
         {
-            vectorComponents[i] = components[i];
+            newComponentsArray[i] = components[i];
         }
 
-        return vectorComponents;
+        return newComponentsArray;
     }
 
     public override string? ToString()
     {
-        if (VectorComponents!.Length == 0)
+        if (VectorComponents.Length == 0)
         {
             return "";
         }
@@ -142,23 +145,19 @@ internal class Vector
         return hash;
     }
 
-    private int GetComponentsArrayHashCode(double[]? componentsArray)
+    private int GetComponentsArrayHashCode(double[] componentsArray)
     {
-        if (componentsArray is null)
-        {
-            throw new ArgumentException(nameof(componentsArray));
-        }
-
         if (componentsArray.Length == 0)
         {
             return 0;
         }
 
-        int hash = 0;
+        int prime = 37;
+        int hash = 1;
 
         for (int i = 0; i < componentsArray.Length; i++)
         {
-            hash += componentsArray[i].GetHashCode();
+            hash = prime * hash + componentsArray[i].GetHashCode();
         }
 
         return hash;
@@ -181,21 +180,16 @@ internal class Vector
         return EqualsVectorComponents(VectorComponents, vector.VectorComponents) && Dimension == vector.Dimension;
     }
 
-    private bool EqualsVectorComponents(double[]? array, double[]? array2)
+    private bool EqualsVectorComponents(double[] array1, double[] array2)
     {
-        if (array is null || array2 is null)
-        {
-            throw new ArgumentNullException();
-        }
-
-        if (array.Length != array2.Length)
+        if (array1.Length != array2.Length)
         {
             return false;
         }
 
-        for (int i = 0; i < array.Length; i++)
+        for (int i = 0; i < array1.Length; i++)
         {
-            if (array[i] != array2[i])
+            if (array1[i] != array2[i])
             {
                 return false;
             }
@@ -211,58 +205,61 @@ internal class Vector
 
     public void GetVectorsSum(Vector vector)
     {
-        if (vector.VectorComponents is null)
+        if (vector is null)
         {
-            throw new ArgumentException(nameof(vector.VectorComponents));
+            throw new ArgumentNullException(nameof(vector));
         }
 
-        int maxSize = Math.Max(VectorComponents!.Length, vector.VectorComponents.Length);
+        Dimension = Math.Max(Dimension, vector.Dimension);
 
-        VectorComponents = GetComponentsCopy(VectorComponents, maxSize);
-        double[] components2 = GetComponentsCopy(vector.VectorComponents, maxSize);
-
-        for (int i = 0; i < maxSize; i++)
+        if (VectorComponents.Length < Dimension)
         {
-            VectorComponents[i] += components2[i];
+            VectorComponents = GetArraysSum(GetComponentsCopy(VectorComponents, Dimension), vector.VectorComponents, Dimension);
         }
+        else
+        {
+            VectorComponents = GetArraysSum(VectorComponents, vector.VectorComponents, vector.Dimension);
+        }
+    }
+
+    private static double[] GetArraysSum(double[] array1, double[] array2, int length)
+    {
+        for (int i = 0; i < length; i++)
+        {
+            array1[i] += array2[i];
+        }
+
+        return array1;
     }
 
     public void GetVectorsDifference(Vector vector)
     {
-        if (vector.VectorComponents is null)
+        if (vector is null)
         {
-            throw new ArgumentException(nameof(vector.VectorComponents));
+            throw new ArgumentNullException(nameof(vector));
         }
 
-        int minSize = VectorComponents!.Length;
+        Dimension = Math.Max(Dimension, vector.Dimension);
 
-        if (VectorComponents.Length < vector.VectorComponents.Length)
+        VectorComponents = GetComponentsCopy(VectorComponents, Dimension);
+        VectorComponents = GetArraysDifference(VectorComponents, vector.VectorComponents, vector.Dimension);
+    }
+
+    private static double[] GetArraysDifference(double[] minuendArray, double[] subtrahendArray, int length)
+    {
+        for (int i = 0; i < length; i++)
         {
-            double[] temp = new double[vector.VectorComponents.Length];
-
-            for (int i = 0; i < VectorComponents.Length; i++)
-            {
-                temp[i] = VectorComponents[i];
-            }
-
-            VectorComponents = temp;
-        }
-        else
-        {
-            minSize = vector.VectorComponents.Length;
+            minuendArray[i] -= subtrahendArray[i];
         }
 
-        for (int i = 0; i < minSize; i++)
-        {
-            VectorComponents[i] -= vector.VectorComponents[i];
-        }
+        return minuendArray;
     }
 
     public void GetScalarMultiplication(int scalar)
     {
-        for (int i = 0; i < VectorComponents!.Length; i++)
+        for (int i = 0; i < Dimension; i++)
         {
-            VectorComponents[i] = Math.Abs(VectorComponents[i]) * Math.Abs(scalar);
+            VectorComponents[i] *= scalar;
         }
     }
 
@@ -270,22 +267,29 @@ internal class Vector
     {
         int sOne = -1;
 
-        for (int i = 0; i < VectorComponents!.Length; i++)
+        for (int i = 0; i < Dimension; i++)
         {
             VectorComponents[i] *= sOne;
         }
     }
 
-    public int GetVectorLength()
+    public double GetVectorLength()
     {
-        return VectorComponents!.Length;
+        double vectorLength = 0;
+
+        for (int i = 0; i < Dimension; i++)
+        {
+            vectorLength += Math.Pow(VectorComponents[i], 2);
+        }
+
+        return Math.Sqrt(vectorLength);
     }
 
     public double GetVectorComponent(int index)
     {
-        if (index < 0 || index >= VectorComponents!.Length)
+        if (index < 0 || index >= Dimension)
         {
-            return -1;
+            throw new ArgumentException(nameof(index));
         }
 
         return VectorComponents[index];
@@ -293,9 +297,9 @@ internal class Vector
 
     public void SetVectorComponent(int index, double component)
     {
-        if (index < 0 || index >= VectorComponents!.Length)
+        if (index < 0 || index >= Dimension)
         {
-            throw new ArgumentException();
+            throw new ArgumentException(nameof(index));
         }
 
         VectorComponents[index] = component;
@@ -303,79 +307,56 @@ internal class Vector
 
     public static Vector GetVectorsSum(Vector vector1, Vector vector2)
     {
-        if (vector1.VectorComponents is null || vector2.VectorComponents is null)
+        if (vector1 is null || vector2 is null)
         {
-            throw new ArgumentException();
+            throw new ArgumentNullException();
         }
 
-        int maxSize = Math.Max(vector1.VectorComponents.Length, vector2.VectorComponents.Length);
+        int maxDimension = Math.Max(vector1.Dimension, vector2.Dimension);
 
-        double[] components1 = GetComponentsCopy(vector1.VectorComponents, maxSize);
-        double[] components2 = GetComponentsCopy(vector2.VectorComponents, maxSize);
+        double[] components1 = GetComponentsCopy(vector1.VectorComponents, maxDimension);
 
-        for (int i = 0; i < maxSize; i++)
+        if (vector1.Dimension < maxDimension)
         {
-            components1[i] += components2[i];
+            return new Vector(GetArraysSum(components1, vector2.VectorComponents, maxDimension));
         }
 
-        return new Vector(components1);
+        return new Vector(GetArraysSum(components1, vector2.VectorComponents, vector2.Dimension));
     }
 
-    public static Vector GetVectorsDifference(Vector vector1, Vector vector2)
+    public static Vector GetVectorsDifference(Vector minuendVector, Vector subtrahendVector)
     {
-        if (vector1.VectorComponents is null || vector2.VectorComponents is null)
+        if (minuendVector is null || subtrahendVector is null)
         {
-            throw new ArgumentException();
+            throw new ArgumentNullException();
         }
 
-        int maxSize = Math.Max(vector1.VectorComponents.Length, vector2.VectorComponents.Length);
+        int maxDimension = Math.Max(minuendVector.Dimension, subtrahendVector.Dimension);
 
-        double[] components1 = GetComponentsCopy(vector1.VectorComponents, maxSize);
-        double[] components2 = GetComponentsCopy(vector2.VectorComponents, maxSize);
+        double[] components1 = GetComponentsCopy(minuendVector.VectorComponents, maxDimension);
 
-        for (int i = 0; i < maxSize; i++)
+        if (minuendVector.Dimension < maxDimension)
         {
-            components1[i] -= components2[i];
+            return new Vector(GetArraysDifference(components1, subtrahendVector.VectorComponents, maxDimension));
         }
 
-        return new Vector(components1);
-    }
-
-    private static double[] GetComponentsCopy(double[] components, int size)
-    {
-        double[] newComponentsArray = new double[size];
-
-        for (int i = 0; i < size; i++)
-        {
-            newComponentsArray[i] = components[i];
-        }
-
-        return newComponentsArray;
+        return new Vector(GetArraysDifference(components1, subtrahendVector.VectorComponents, subtrahendVector.Dimension));
     }
 
     public static double GetVectorsScalarProduct(Vector vector1, Vector vector2)
     {
-        if (vector1.VectorComponents is null || vector2.VectorComponents is null)
+        if (vector1 is null || vector2 is null)
         {
-            throw new ArgumentException();
+            throw new ArgumentNullException();
         }
 
         double scalarProduct = 0;
 
-        int minSize = Math.Min(vector1.VectorComponents.Length, vector2.VectorComponents.Length);
+        int minDimension = Math.Min(vector1.Dimension, vector2.Dimension);
 
-        double[] temp = new double[Math.Max(vector1.VectorComponents.Length, vector2.VectorComponents.Length)];
+        double[] temp = new double[Math.Max(vector1.Dimension, vector2.Dimension)];
 
-        if (vector1.VectorComponents.Length == temp.Length)
-        {
-            temp = vector1.VectorComponents;
-        }
-        else
-        {
-            temp = vector2.VectorComponents;
-        }
-
-        for (int i = 0; i < minSize; i++)
+        for (int i = 0; i < minDimension; i++)
         {
             temp[i] = vector1.VectorComponents[i] * vector2.VectorComponents[i];
             scalarProduct += temp[i];
