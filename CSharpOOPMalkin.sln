@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
@@ -8,6 +7,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RangeTask", "RangeTask\RangeTask.csproj", "{F815B63A-EA7D-40A1-A22C-98FCB170C227}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapesTask", "ShapesTask\ShapesTask.csproj", "{A7A61E48-CA34-43D2-855C-30696853A61D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatrixTask", "MatrixTask\MatrixTask.csproj", "{E7A76AB6-F43B-48E8-96C8-3886CF13917E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +28,10 @@ Global
 		{A7A61E48-CA34-43D2-855C-30696853A61D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7A61E48-CA34-43D2-855C-30696853A61D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7A61E48-CA34-43D2-855C-30696853A61D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7A76AB6-F43B-48E8-96C8-3886CF13917E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7A76AB6-F43B-48E8-96C8-3886CF13917E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7A76AB6-F43B-48E8-96C8-3886CF13917E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7A76AB6-F43B-48E8-96C8-3886CF13917E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 
 namespace VectorTask;
 
-internal class Vector
+public class Vector
 {
     private int _dimension;
 
