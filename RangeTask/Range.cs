@@ -30,7 +30,7 @@ internal class Range
         return [new Range(From, To), new Range(range.From, range.To)];
     }
 
-    public Range[]? GetDifference(Range range)
+    public Range[] GetDifference(Range range)
     {
         if (Math.Max(From, range.From) >= Math.Min(To, range.To))
         {

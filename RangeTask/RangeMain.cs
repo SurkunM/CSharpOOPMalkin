@@ -27,7 +27,7 @@ internal class RangeMain
         }
     }
 
-    public static void PrintRangesArray(Range[]? rangesArray)
+    public static void PrintRangesArray(Range[] rangesArray)
     {
         if (rangesArray is null)
         {
@@ -57,7 +57,7 @@ internal class RangeMain
         Console.WriteLine("Объединение диапазонов:");
         PrintRangesArray(rangesUnion);
 
-        Range[]? rangesDifference = range1.GetDifference(range2);
+        Range[] rangesDifference = range1.GetDifference(range2);
 
         Console.WriteLine("Разность диапазонов:");
         PrintRangesArray(rangesDifference);
