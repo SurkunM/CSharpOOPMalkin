@@ -1,6 +1,4 @@
-﻿using ShapesTask.ShapesInterface;
-
-namespace ShapesTask.ShapesClasses;
+﻿namespace ShapesTask.ShapesClasses;
 
 internal class Circle : IShape
 {
@@ -33,7 +31,7 @@ internal class Circle : IShape
 
     public override string ToString()
     {
-        return $"{Radius.GetType()}: Radius {{{Radius}}}";
+        return $"Circle: Radius = {Radius}";
     }
 
     public override int GetHashCode()
@@ -53,13 +51,13 @@ internal class Circle : IShape
             return true;
         }
 
-        if (ReferenceEquals(obj, null) || obj.GetType() != GetType())
+        if (obj is null || obj.GetType() != GetType())
         {
             return false;
         }
 
-        Circle circleObj = (Circle)obj;
+        Circle circle = (Circle)obj;
 
-        return Radius == circleObj.Radius;
+        return Radius == circle.Radius;
     }
 }

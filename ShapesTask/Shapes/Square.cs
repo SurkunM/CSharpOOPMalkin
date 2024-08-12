@@ -1,11 +1,8 @@
-﻿using ShapesTask.ShapesInterface;
-using System.Runtime.Remoting;
-
-namespace ShapesTask.ShapesClasses;
+﻿namespace ShapesTask.ShapesClasses;
 
 internal class Square : IShape
 {
-    private const int sidesCount = 4;
+    private const int SidesCount = 4;
 
     public double SideLength { get; set; }
 
@@ -31,12 +28,12 @@ internal class Square : IShape
 
     public double GetPerimeter()
     {
-        return SideLength * sidesCount;
+        return SideLength * SidesCount;
     }
 
     public override string ToString()
     {
-        return $"{SideLength.GetType()}: SideLength {{{SideLength}}}";
+        return $"Square: SideLength = {SideLength}";
     }
 
     public override int GetHashCode()
@@ -56,13 +53,13 @@ internal class Square : IShape
             return true;
         }
 
-        if (ReferenceEquals(obj, null) || obj.GetType() != GetType())
+        if (obj is null || obj.GetType() != GetType())
         {
             return false;
         }
 
-        Square squareObj = (Square)obj;
+        Square square = (Square)obj;
 
-        return SideLength == squareObj.SideLength;
+        return SideLength == square.SideLength;
     }
 }

@@ -1,6 +1,4 @@
-﻿using ShapesTask.ShapesInterface;
-
-namespace ShapesTask.ShapesClasses;
+﻿namespace ShapesTask.ShapesClasses;
 
 internal class Triangle : IShape
 {
@@ -38,7 +36,7 @@ internal class Triangle : IShape
 
     public double GetArea()
     {
-        return (1.0 / 2) * Math.Abs((X2 - X1) * (Y3 - Y1) - (X3 - X1) * (Y2 - Y1));
+        return 0.5 * Math.Abs((X2 - X1) * (Y3 - Y1) - (X3 - X1) * (Y2 - Y1));
     }
 
     public double GetPerimeter()
@@ -55,16 +53,14 @@ internal class Triangle : IShape
         return side1Length + side2Length + side3Length;
     }
 
-    private double GetSideLength(double x1, double x2, double y1, double y2)
+    private static double GetSideLength(double x1, double y1, double x2, double y2)
     {
         return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
     }
 
     public override string ToString()
     {
-        return $"{X1.GetType()}: X1 {{{X1}}}; {Y1.GetType()}: Y1 {{{Y1}}}; " +
-               $"{X2.GetType()}: X2 {{{X2}}}; {Y2.GetType()}: Y2 {{{Y2}}}; " +
-               $"{X3.GetType()}: X3 {{{X3}}}; {Y3.GetType()}: Y3 {{{Y3}}};";
+        return $"Triangle: X1Y1({X1}; {Y1}), X2Y2({X2}; {Y2}), X3Y3({X3}; {Y3})";
     }
 
     public override int GetHashCode()
@@ -91,15 +87,15 @@ internal class Triangle : IShape
             return true;
         }
 
-        if (ReferenceEquals(obj, null) || obj.GetType() != GetType())
+        if (obj is null || obj.GetType() != GetType())
         {
             return false;
         }
 
-        Triangle triangleObj = (Triangle)obj;
+        Triangle triangle = (Triangle)obj;
 
-        return X1 == triangleObj.X1 && Y1 == triangleObj.Y1 &&
-               X2 == triangleObj.X1 && Y2 == triangleObj.Y1 &&
-               X3 == triangleObj.X1 && Y3 == triangleObj.Y1;
+        return X1 == triangle.X1 && Y1 == triangle.Y1 &&
+               X2 == triangle.X2 && Y2 == triangle.Y2 &&
+               X3 == triangle.X3 && Y3 == triangle.Y3;
     }
 }
