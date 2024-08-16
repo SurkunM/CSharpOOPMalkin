@@ -1,0 +1,4 @@
+﻿What is object oriented design? What is it all about? What are it's benefits? What are it's costs? 
+It may seem silly to ask these questions in a day and age when virtually every software developer is using an object oriented language of some kind. 
+Yet the question is important because, it seems to me, that most of us use those languages without knowing why, 
+and without knowing how to get the the most benefit out of them.
