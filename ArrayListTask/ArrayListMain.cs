@@ -10,7 +10,7 @@ internal class ArrayListMain
 
         list[0] = "q";
 
-        list.CopyTo(stringsArray, 0);
+        list.CopyTo(stringsArray, 3);
 
         list.Clear();
 

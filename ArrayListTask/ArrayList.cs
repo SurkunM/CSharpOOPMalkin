@@ -117,7 +117,12 @@ internal class ArrayList<T> : IList<T>
             throw new ArgumentOutOfRangeException(nameof(index));
         }
 
-        Array.Copy(_items, 0, array, index, array.Length - index);
+        if (array.Length - index < _count)
+        {
+            throw new ArgumentException(nameof(array), "Недостаточна длинна массива");
+        }
+
+        Array.Copy(_items, 0, array, index, _count);
     }
 
     public int IndexOf(T item)
