@@ -6,6 +6,7 @@ internal class GraphMain
     {
         Graph graph = new Graph();
 
+        graph.RecursionDepthFirstSearch();
         graph.BreadthFirstSearch();
         graph.DepthFirstSearch();
     }

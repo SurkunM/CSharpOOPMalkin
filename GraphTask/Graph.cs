@@ -4,7 +4,7 @@ internal class Graph
 {
     private readonly int[,] _items =
     {
-            {0 ,1 ,0 ,0 ,0 ,0 , 0},
+            {0 ,0 ,0 ,0 ,0 ,0 , 0},
             {1 ,0 ,1 ,1 ,1 ,1 , 0},
             {0 ,1 ,0 ,0 ,0 ,0 , 1},
             {0 ,1 ,0 ,0 ,0 ,0 , 0},
@@ -75,6 +75,33 @@ internal class Graph
             if (stack.Count == 0 && Array.IndexOf(visited, false) >= 0)
             {
                 stack.Push(Array.IndexOf(visited, false));
+            }
+        }
+    }
+
+    public void RecursionDepthFirstSearch()
+    {
+        bool[] visited = new bool[_items.GetLength(0)];
+
+        while (Array.IndexOf(visited, false) >= 0)
+        {
+            DepthFirstSearch(Array.IndexOf(visited, false), visited);
+        }
+    }
+
+    private void DepthFirstSearch(int vertex, bool[] visited)
+    {
+        if (!visited[vertex])
+        {
+            visited[vertex] = true;
+            Console.WriteLine(vertex);
+
+            for (int i = 0; i < _items.GetLength(1); i++)
+            {
+                if (_items[vertex, i] > 0)
+                {
+                    DepthFirstSearch(i, visited);
+                }
             }
         }
     }
