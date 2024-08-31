@@ -3,7 +3,7 @@
 internal class Graph
 {
     private readonly int[,] _items =
-        {
+    {
             {0 ,1 ,0 ,0 ,0 ,0 , 0},
             {1 ,0 ,1 ,1 ,1 ,1 , 0},
             {0 ,1 ,0 ,0 ,0 ,0 , 1},
@@ -11,7 +11,7 @@ internal class Graph
             {0 ,1 ,0 ,0 ,0 ,1 , 0},
             {0 ,1 ,0 ,0 ,1 ,0 , 1},
             {0 ,0 ,1 ,0 ,0 ,1 , 0}
-        };
+    };
 
     public Graph() { }
 
@@ -31,11 +31,11 @@ internal class Graph
                 Console.WriteLine(currentItem);
                 visited[currentItem] = true;
 
-                for (int j = 0; j < _items.GetLength(1); j++)
+                for (int i = 0; i < _items.GetLength(1); i++)
                 {
-                    if (_items[currentItem, j] > 0)
+                    if (_items[currentItem, i] > 0)
                     {
-                        queue.Enqueue(j);
+                        queue.Enqueue(i);
                     }
                 }
             }
@@ -63,11 +63,11 @@ internal class Graph
                 Console.WriteLine(currentItem);
                 visited[currentItem] = true;
 
-                for (int j = _items.GetLength(1) - 1; j >= 0; j--)
+                for (int i = _items.GetLength(1) - 1; i >= 0; i--)
                 {
-                    if (_items[currentItem, j] > 0)
+                    if (_items[currentItem, i] > 0)
                     {
-                        stack.Push(j);
+                        stack.Push(i);
                     }
                 }
             }
