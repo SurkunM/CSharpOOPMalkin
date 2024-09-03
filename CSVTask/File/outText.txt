@@ -1,0 +1,65 @@
+<table>
+	<tr>
+		<td>User</td>
+		<td>Role</td>
+		<td>RoleType</td>
+		<td>Password</td>
+		<td>EMail</td>
+		<td>FullName</td>
+		<td>Description</td>
+	</tr>
+	<tr>
+		<td>JanieG</td>
+		<td>Administrators</td>
+		<td>ADMINISTER</td>
+		<td>admin123</td>
+		<td>janie@esritown.com</td>
+		<td>Janie Garza</td>
+		<td>Server administrator</td>
+	</tr>
+	<tr>
+		<td>BenO</td>
+		<td>Publishers</td>
+		<td>PUBLISH</td>
+		<td>pub123</td>
+		<td>ben@esritown.com</td>
+		<td>Ben Osgoode</td>
+		<td>Publisher from police department</td>
+	</tr>
+	<tr>
+		<td>KristyJ</td>
+		<td>Publishers</td>
+		<td>PUBLISH</td>
+		<td>pub123</td>
+		<td>kristy@esritown.com</td>
+		<td>Kristy Jones</td>
+		<td>Publisher from fire department</td>
+	</tr>
+	<tr>
+		<td>ClaudeM</td>
+		<td>Police Users</td>
+		<td>ACCESS</td>
+		<td>access123</td>
+		<td>claude@esritown.com</td>
+		<td>Claude Miller</td>
+		<td>Police department member</td>
+	</tr>
+	<tr>
+		<td>KimballS</td>
+		<td>Police Users</td>
+		<td>ACCESS</td>
+		<td>access123</td>
+		<td>kimball@esritown.com</td>
+		<td>Kimball Scott</td>
+		<td>Police department member</td>
+	</tr>
+	<tr>
+		<td>TomO</td>
+		<td>Fire Users</td>
+		<td>ACCESS</td>
+		<td>access123</td>
+		<td>tom@esritown.com</td>
+		<td>Tom O'Quinn</td>
+		<td>Fire department member</td>
+	</tr>
+</table>

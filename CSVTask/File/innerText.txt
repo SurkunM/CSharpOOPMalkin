@@ -1,0 +1,7 @@
+﻿User,Role,RoleType,Password,EMail,FullName,Description
+JanieG,Administrators,ADMINISTER,admin123,janie@esritown.com,Janie Garza,Server administrator
+BenO,Publishers,PUBLISH,pub123,ben@esritown.com,Ben Osgoode,Publisher from police department
+KristyJ,Publishers,PUBLISH,pub123,kristy@esritown.com,Kristy Jones,Publisher from fire department
+ClaudeM,Police Users,ACCESS,access123,claude@esritown.com,Claude Miller,Police department member
+KimballS,Police Users,ACCESS,access123,kimball@esritown.com,Kimball Scott,Police department member
+TomO,Fire Users,ACCESS,access123,tom@esritown.com,Tom O'Quinn,Fire department member

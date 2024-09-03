@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListTask", "ListTask\ListTa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreeTask", "TreeTask\TreeTask.csproj", "{BF638022-E342-4810-8A57-E5970E60301F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphTask", "GraphTask\GraphTask.csproj", "{783C85A4-E540-4E89-A77F-DC537EA5DAA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphTask", "GraphTask\GraphTask.csproj", "{783C85A4-E540-4E89-A77F-DC537EA5DAA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSVTask", "CSVTask\CSVTask.csproj", "{4462148A-5CF4-49BD-8A57-B2B17F9BAB2E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{783C85A4-E540-4E89-A77F-DC537EA5DAA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{783C85A4-E540-4E89-A77F-DC537EA5DAA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{783C85A4-E540-4E89-A77F-DC537EA5DAA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4462148A-5CF4-49BD-8A57-B2B17F9BAB2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4462148A-5CF4-49BD-8A57-B2B17F9BAB2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4462148A-5CF4-49BD-8A57-B2B17F9BAB2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4462148A-5CF4-49BD-8A57-B2B17F9BAB2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
