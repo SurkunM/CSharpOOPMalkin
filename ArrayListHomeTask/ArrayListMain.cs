@@ -2,19 +2,32 @@
 
 internal class ArrayListMain
 {
-    public static void Reader(List<string> list, string patch)
+    public static List<string> GetListFromFile(string inputFile)
     {
-        using StreamReader reader = new StreamReader(patch);
-
-        string? current = "";
-
-        while ((current = reader.ReadLine()) != null)
+        try
         {
-            list.Add(current);
+            using StreamReader reader = new StreamReader(inputFile);
+
+            List<string> list = new List<string>();
+
+            string? currentLine;
+
+            while ((currentLine = reader.ReadLine()) != null)
+            {
+                list.Add(currentLine);
+            }
+
+            return list;
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Файл не найден");
+
+            return [];
         }
     }
 
-    public static void RemoveEvenElements(List<int> list)
+    public static void RemovingEvenElements(List<int> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
@@ -23,13 +36,11 @@ internal class ArrayListMain
                 list.RemoveAt(i);
             }
         }
-
-        list.TrimExcess();
     }
 
-    public static List<int> GetRemoveDuplicates(List<int> numbers)
+    public static List<T> RemovingDuplicates<T>(List<T> numbers)
     {
-        List<int> result = new List<int>();
+        List<T> result = new List<T>(numbers.Count);
 
         for (int i = 0; i < numbers.Count; i++)
         {
@@ -44,18 +55,16 @@ internal class ArrayListMain
 
     static void Main(string[] args)
     {
-        List<string> list = new List<string>();
-        Reader(list, "..\\..\\..\\TextFile\\Text.txt");
+        List<string> list = GetListFromFile("..\\..\\..\\TextFile\\Text.txt");
 
         Console.WriteLine(string.Join(Environment.NewLine, list));
 
-        List<int> numbers1 = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
-        RemoveEvenElements(numbers1);
+        List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
+        RemovingEvenElements(numbers);
 
-        Console.WriteLine(string.Join(", ", numbers1));
+        Console.WriteLine(string.Join(", ", numbers));
 
-        List<int> number2 = GetRemoveDuplicates(numbers1);
-
-        Console.WriteLine(string.Join(", ", number2));
+        List<int> uniqueNumbers = RemovingDuplicates(numbers);
+        Console.WriteLine(string.Join(", ", uniqueNumbers));
     }
 }
