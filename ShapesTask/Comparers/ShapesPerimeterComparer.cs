@@ -1,17 +1,17 @@
-﻿using ShapesTask.ShapesClasses;
+﻿using ShapesTask.Shapes;
 
-namespace ShapesTask.Comparators;
+namespace ShapesTask.Compares;
 
 internal class ShapesPerimeterComparer : IComparer<IShape>
 {
     public int Compare(IShape? shape1, IShape? shape2)
     {
-        if (shape1 is null)
+        if (shape1 is null && shape2 is not null)
         {
             return -1;
         }
 
-        if (shape2 is null)
+        if (shape1 is not null && shape2 is null)
         {
             return 1;
         }
@@ -21,6 +21,6 @@ internal class ShapesPerimeterComparer : IComparer<IShape>
             return 0;
         }
 
-        return shape1.GetPerimeter().CompareTo(shape2.GetPerimeter());
+        return shape1!.GetPerimeter().CompareTo(shape2!.GetPerimeter());
     }
 }

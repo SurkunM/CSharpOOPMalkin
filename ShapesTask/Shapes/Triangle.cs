@@ -1,4 +1,4 @@
-﻿namespace ShapesTask.ShapesClasses;
+﻿namespace ShapesTask.Shapes;
 
 internal class Triangle : IShape
 {
