@@ -10,7 +10,7 @@ public class Vector
     {
         if (dimension <= 0)
         {
-            throw new IndexOutOfRangeException(nameof(dimension));
+            throw new ArgumentException("Размерность вектора не может быть меньше или равной нулю.", nameof(dimension));
         }
 
         _components = new double[dimension];
@@ -23,7 +23,7 @@ public class Vector
             throw new ArgumentNullException(nameof(vector));
         }
 
-        _components = new double[vector.GetSize()];
+        _components = new double[vector._components.Length];
 
         vector._components.CopyTo(_components, 0);
     }
@@ -37,7 +37,7 @@ public class Vector
 
         if (components.Length == 0)
         {
-            throw new IndexOutOfRangeException(nameof(components));
+            throw new ArgumentException("Размерность вектора не может быть меньше или равной нулю.", nameof(components.Length));
         }
 
         _components = new double[components.Length];
@@ -49,7 +49,7 @@ public class Vector
     {
         if (dimension <= 0)
         {
-            throw new IndexOutOfRangeException(nameof(dimension));
+            throw new ArgumentException("Размерность вектора не может быть меньше или равной нулю.", nameof(dimension));
         }
 
         if (components is null)
@@ -59,12 +59,7 @@ public class Vector
 
         _components = new double[dimension];
 
-        if (_components.Length < components.Length)
-        {
-            Array.Resize(ref _components, components.Length);
-        }
-
-        components.CopyTo(_components, 0);
+        Array.Copy(components, 0, _components, 0, dimension);
     }
 
     public override string? ToString()
@@ -90,8 +85,6 @@ public class Vector
         int prime = 37;
         int hash = 1;
 
-        hash = prime * hash + _components.Length;
-
         foreach (double component in _components)
         {
             hash = prime * hash + component.GetHashCode();
@@ -114,11 +107,9 @@ public class Vector
 
         Vector vector = (Vector)obj;
 
-        bool isEquals = true;
-
         if (_components.Length != vector._components.Length)
         {
-            isEquals = false;
+            return false;
         }
         else
         {
@@ -126,13 +117,12 @@ public class Vector
             {
                 if (_components[i] != vector._components[i])
                 {
-                    isEquals = false;
-                    break;
+                    return false;
                 }
             }
         }
 
-        return isEquals;
+        return true;
     }
 
     public int GetSize()
@@ -140,16 +130,16 @@ public class Vector
         return _components.Length;
     }
 
-    public void Sum(Vector vector)
+    public void Adding(Vector vector)
     {
         if (vector is null)
         {
             throw new ArgumentNullException(nameof(vector));
         }
 
-        if (GetSize() < vector.GetSize())
+        if (_components.Length < vector._components.Length)
         {
-            Array.Resize(ref _components, vector.GetSize());
+            Array.Resize(ref _components, vector._components.Length);
         }
 
         for (int i = 0; i < vector._components.Length; i++)
@@ -158,16 +148,16 @@ public class Vector
         }
     }
 
-    public void Difference(Vector vector)
+    public void Subtraction(Vector vector)
     {
         if (vector is null)
         {
             throw new ArgumentNullException(nameof(vector));
         }
 
-        if (GetSize() < vector.GetSize())
+        if (_components.Length < vector._components.Length)
         {
-            Array.Resize(ref _components, vector.GetSize());
+            Array.Resize(ref _components, vector._components.Length);
         }
 
         for (int i = 0; i < vector._components.Length; i++)
@@ -176,7 +166,7 @@ public class Vector
         }
     }
 
-    public void MultiplicationInScalar(double scalar)
+    public void MultiplyByScalar(double scalar)
     {
         for (int i = 0; i < _components.Length; i++)
         {
@@ -184,12 +174,12 @@ public class Vector
         }
     }
 
-    public void ReverseVector()
+    public void Reverse()
     {
-        MultiplicationInScalar(-1);
+        MultiplyByScalar(-1);
     }
 
-    public double GetVectorModulus()
+    public double GetLength()
     {
         double vectorModulus = 0;
 
@@ -221,7 +211,7 @@ public class Vector
         _components[index] = component;
     }
 
-    public static Vector GetVectorsSum(Vector vector1, Vector vector2)
+    public static Vector GetSum(Vector vector1, Vector vector2)
     {
         if (vector1 is null)
         {
@@ -233,14 +223,14 @@ public class Vector
             throw new ArgumentNullException(nameof(vector2));
         }
 
-        Vector temp = new Vector(vector1);
+        Vector newVector = new Vector(vector1);
 
-        temp.Sum(vector2);
+        newVector.Adding(vector2);
 
-        return temp;
+        return newVector;
     }
 
-    public static Vector GetVectorsDifference(Vector vector1, Vector vector2)
+    public static Vector GetDifference(Vector vector1, Vector vector2)
     {
         if (vector1 is null)
         {
@@ -252,14 +242,14 @@ public class Vector
             throw new ArgumentNullException(nameof(vector2));
         }
 
-        Vector temp = new Vector(vector1);
+        Vector newVector = new Vector(vector1);
 
-        temp.Difference(vector2);
+        newVector.Subtraction(vector2);
 
-        return temp;
+        return newVector;
     }
 
-    public static double GetVectorsScalarProduct(Vector vector1, Vector vector2)
+    public static double GetScalarProduct(Vector vector1, Vector vector2)
     {
         if (vector1 is null)
         {
