@@ -16,8 +16,12 @@ internal class LambdasMain
     {
         List<Person> personsList = new List<Person>
         {
-            new ("Ivan", 34), new("Sergey", 28), new("Alexander", 17),
-            new ("Alina", 16), new ("Natalya", 29), new ("Ivan", 22)
+            new ("Ivan", 34),
+            new("Sergey", 28),
+            new("Alexander", 17),
+            new ("Alina", 16),
+            new ("Natalya", 29),
+            new ("Ivan", 22)
         };
 
         List<string> uniquePerson = personsList
