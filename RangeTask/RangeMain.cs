@@ -29,16 +29,9 @@ internal class RangeMain
 
     public static void PrintRangesArray(Range[] rangesArray)
     {
-        if (rangesArray is null)
+        foreach (Range range in rangesArray)
         {
-            Console.WriteLine("У разности нет диапазонов:");
-        }
-        else
-        {
-            foreach (Range range in rangesArray)
-            {
-                Console.WriteLine(range);
-            }
+            Console.WriteLine(range);
         }
     }
 
