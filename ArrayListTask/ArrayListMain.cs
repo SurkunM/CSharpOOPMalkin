@@ -4,24 +4,26 @@ internal class ArrayListMain
 {
     static void Main(string[] args)
     {
-        ArrayList<string> list = new ArrayList<string>(4) { "a", "bc", "cd" };
+        ArrayList<string> list1 = new ArrayList<string>(3) { "a", "bc", "cd" };
+        ArrayList<string> list2 = new ArrayList<string>(1);
 
-        string[] stringsArray = new string[list.Count * 2];
+        list2.Add("f");
+        list2[0] = "a";
+        list2.Add("bc");
+        list2.Insert(2, "cd");
 
-        list[0] = "q";
+        list1.Equals(list2);
 
-        list.CopyTo(stringsArray, 3);
+        string[] stringsArray = new string[list2.Count * 2];
+        list2.CopyTo(stringsArray, 3);
 
-        list.Clear();
+        list1.IndexOf("b");
+        list1.Contains("a");
 
-        list.Add("a");
-        list.Insert(0, "b");
+        list1.Remove("a");
+        list1.RemoveAt(0);
 
-        list.Contains("a");
-        list.IndexOf("b");
-
-        list.Remove("a");
-        list.RemoveAt(0);
-        list.TrimExcess();
+        list1.Clear();
+        list1.TrimExcess();
     }
 }

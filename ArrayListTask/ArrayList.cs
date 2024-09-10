@@ -6,15 +6,17 @@ internal class ArrayList<T> : IList<T>
 {
     private T[] _items = [];
 
-    private int _count;
+    public int Count { get; private set; }
+
+    private int _modCount;
 
     public T this[int index]
     {
         get
         {
-            if (index < 0 || index >= _count)
+            if (index < 0 || index >= Count)
             {
-                throw new IndexOutOfRangeException(nameof(index));
+                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
             }
 
             return _items[index];
@@ -22,57 +24,44 @@ internal class ArrayList<T> : IList<T>
 
         set
         {
-            if (index < 0 || index >= _count)
+            if (index < 0 || index >= Count)
             {
-                throw new IndexOutOfRangeException(nameof(index));
+                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
             }
 
             _items[index] = value;
-        }
-    }
 
-    public int Count
-    {
-        get { return _count; }
+            _modCount++;
+        }
     }
 
     public int Capacity
     {
-        get { return _items.Length; }
+        get => _items.Length;
 
         set
         {
-            if (value < _count)
+            if (value < Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(value));
+                throw new ArgumentOutOfRangeException(nameof(value), "Вместимость списка не может быть меньше количества существующих элементов");
             }
 
-            T[] newItems = new T[value];
-
-            if (_count > 0)
-            {
-                Array.Copy(_items, newItems, _count);
-            }
-
-            _items = newItems;
+            Array.Resize(ref _items, value);
         }
     }
 
     public bool IsReadOnly
     {
-        get
-        {
-            return ((ICollection<T>)_items).IsReadOnly;
-        }
+        get => false;
     }
 
     public ArrayList() { }
 
     public ArrayList(int capacity)
     {
-        if (capacity < _count)
+        if (capacity < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(capacity));
+            throw new ArgumentOutOfRangeException(nameof(capacity), "Вместимость списка не может быть меньше нуля");
         }
 
         _items = new T[capacity];
@@ -80,24 +69,36 @@ internal class ArrayList<T> : IList<T>
 
     public void Add(T item)
     {
-        if (_count >= _items.Length)
+        if (Count >= _items.Length)
         {
             IncreaseCapacity();
         }
 
-        _items[_count] = item;
-        _count++;
+        _items[Count] = item;
+
+        Count++;
+        _modCount++;
     }
 
     private void IncreaseCapacity()
     {
+        if (_items.Length == 0)
+        {
+            _items = new T[1];
+        }
+
         Array.Resize(ref _items, _items.Length * 2);
     }
 
     public void Clear()
     {
-        Array.Clear(_items, 0, _count);
-        _count = 0;
+        if (Count > 0)
+        {
+            Array.Clear(_items, 0, Count);
+
+            Count = 0;
+            _modCount = 0;
+        }
     }
 
     public bool Contains(T item)
@@ -114,38 +115,35 @@ internal class ArrayList<T> : IList<T>
 
         if (index < 0 || index >= array.Length)
         {
-            throw new ArgumentOutOfRangeException(nameof(index));
+            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
         }
 
-        if (array.Length - index < _count)
-        {
-            throw new ArgumentException(nameof(array), "Недостаточна длинна массива");
-        }
-
-        Array.Copy(_items, 0, array, index, _count);
+        Array.Copy(_items, 0, array, index, Count);
     }
 
     public int IndexOf(T item)
     {
-        return Array.IndexOf(_items, item);
+        return Array.IndexOf(_items, item, 0, Count);
     }
 
     public void Insert(int index, T item)
     {
-        if (index < 0 || index >= _count)
+        if (index < 0 || index > Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index));
+            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
         }
 
-        if (_count >= _items.Length)
+        if (Count >= _items.Length)
         {
             IncreaseCapacity();
         }
 
-        Array.Copy(_items, index, _items, index + 1, _count - index);
+        Array.Copy(_items, index, _items, index + 1, Count - index);
 
         _items[index] = item;
-        _count++;
+
+        Count++;
+        _modCount++;
     }
 
     public bool Remove(T item)
@@ -154,43 +152,115 @@ internal class ArrayList<T> : IList<T>
 
         if (removeItemIndex >= 0)
         {
-            Array.Copy(_items, removeItemIndex + 1, _items, removeItemIndex, _count - removeItemIndex - 1);
+            RemoveAt(removeItemIndex);
 
-            _items[_count - 1] = default!;
-            _count--;
+            return true;
         }
 
-        return removeItemIndex >= 0;
+        return false;
     }
 
     public void RemoveAt(int index)
     {
-        if (index < 0 || index >= _count)
+        if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index));
+            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
         }
 
-        Array.Copy(_items, index + 1, _items, index, _count - index - 1);
+        Array.Copy(_items, index + 1, _items, index, Count - index - 1);
 
-        _items[_count - 1] = default!;
-        _count--;
+        _items[Count - 1] = default!;
+
+        Count--;
+        _modCount--;
     }
 
     public void TrimExcess()
     {
-        if (_count < _items.Length * 0.9)
+        if (Count < _items.Length * 0.9)
         {
-            Capacity = _count;
+            Capacity = Count;
         }
     }
 
+
     public IEnumerator<T> GetEnumerator()
     {
-        return (IEnumerator<T>)_items.GetEnumerator();
+        int mod = _modCount;
+
+        for (int i = 0; i < Count; i++)
+        {
+            if (mod != _modCount)
+            {
+                throw new InvalidCastException("Произошло изменение в элементах коллекции за время обхода");
+            }
+
+            yield return _items[i];
+        }
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
         return _items.GetEnumerator();
+    }
+
+    public override string ToString()
+    {
+        return string.Join(", ", _items);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj is null || obj.GetType() != GetType())
+        {
+            return false;
+        }
+
+        ArrayList<T> list = (ArrayList<T>)obj;
+
+        for (int i = 0; i < Count; i++)
+        {
+            if (_items[i] is null)
+            {
+                if (!ReferenceEquals(_items[i], list[i]))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (!_items[i]!.Equals(list[i]))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public override int GetHashCode()
+    {
+        int prime = 37;
+        int hash = 1;
+
+        foreach (T item in _items)
+        {
+            if (item is null)
+            {
+                hash = prime * hash + 0;
+            }
+            else
+            {
+                hash = prime * hash + item.GetHashCode();
+            }
+        }
+
+        return hash;
     }
 }
