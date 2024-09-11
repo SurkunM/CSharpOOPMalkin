@@ -1,48 +1,24 @@
-﻿using System.Xml;
+﻿using System.Text;
 using VectorTask;
 
 namespace MatrixTask;
 
 internal class Matrix
 {
-    //private double[,]? _vectorsMatrix;
-
-    //public double[,] VectorsMatrix // Vectors[]?
-    //{
-    //    get
-    //    {
-    //        return _vectorsMatrix;
-    //    }
-    //    set
-    //    {
-    //        if (value is null)
-    //        {
-    //            throw new ArgumentNullException();
-    //        }
-
-    //        _vectorsMatrix = value;
-    //    }
-    //}
-
-    public Vector[] VectorsM { get; set; }
-
-    public int RowSize { get; set; }
-
-    public int ColumnSize { get; set; }
+    public Vector[] VectorsMatrix { get; set; }
 
     public Matrix(int row, int column)
     {
         if (row <= 0 || column <= 0)
         {
-            throw new ArgumentException("Размеры матрицы должны быть больше нуля");
+            throw new ArgumentException("Размерность или количество векторов не может быть меньше или равной нулю");
         }
 
-        VectorsM = new Vector[row];
-        Vector temp = new Vector(column);
+        VectorsMatrix = new Vector[row];
 
         for (int i = 0; i < row; i++)
         {
-            VectorsM[i] = new Vector(temp);
+            VectorsMatrix[i] = new Vector(column);
         }
     }
 
@@ -50,43 +26,33 @@ internal class Matrix
     {
         if (matrix is null)
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(matrix));
         }
 
-        RowSize = matrix.RowSize;
-        ColumnSize = matrix.ColumnSize;
-        VectorsM = new Vector[matrix.VectorsM.Length];
+        VectorsMatrix = new Vector[matrix.VectorsMatrix.Length];
 
-
-        for (int i = 0; i < matrix.VectorsM.GetLength(0); i++)
-        {
-            VectorsM[i] = new Vector(matrix.VectorsM[i]);
-        }
-
+        matrix.VectorsMatrix.CopyTo(VectorsMatrix, 0);
     }
 
     public Matrix(double[,] matrix)
     {
         if (matrix is null)
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(matrix));
         }
 
-        RowSize = matrix.GetLength(0);
-        ColumnSize = matrix.GetLength(1);
-
-        VectorsM = new Vector[matrix.GetLength(0)];
+        VectorsMatrix = new Vector[matrix.GetLength(0)];
 
         for (int i = 0; i < matrix.GetLength(0); i++)
         {
-            double[] temp = new double[matrix.GetLength(1)];
+            double[] newMatrix = new double[matrix.GetLength(1)];
 
-            for (int j = 0; j < temp.Length; j++)
+            for (int j = 0; j < newMatrix.Length; j++)
             {
-                temp[j] = matrix[i, j];
+                newMatrix[j] = matrix[i, j];
             }
 
-            VectorsM[i] = new Vector(temp);
+            VectorsMatrix[i] = new Vector(newMatrix);
         }
     }
 
@@ -94,217 +60,151 @@ internal class Matrix
     {
         if (vectors is null)
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(vectors));
         }
 
-        RowSize = vectors.GetLength(0);
-        ColumnSize = GetMaxDimension(vectors);
-        VectorsM = new Vector[vectors.Length];
+        VectorsMatrix = new Vector[vectors.Length];
 
-        for (int i = 0; i < vectors.Length; i++)
+        vectors.CopyTo(VectorsMatrix, 0);
+    }
+
+    public override string ToString()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.Append('{');
+        string separator = ", ";
+
+        foreach (Vector vector in VectorsMatrix)
         {
-            VectorsM[i] = new Vector(vectors[i]);
-        }
-    }
-
-    private static int GetMaxDimension(Vector[] vector)
-    {
-        int maxDimension = 0;
-
-        for (int i = 0; i < vector.Length; i++)
-        {
-            maxDimension = Math.Max(vector[i].Dimension, maxDimension);
+            stringBuilder.Append(vector).Append(separator);
         }
 
-        return maxDimension;
-    }
+        stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
+        stringBuilder.Append('}');
 
-    private double[] GetCopy(double[] matrix)
-    {
-        double[] newArray = new double[RowSize];
-
-        for (int i = 0; i < RowSize; i++)
-        {
-
-            newArray[i] = matrix[i];
-
-        }
-
-        return newArray;
-    }
-    private double[,] GetCopy(Vector[] vectors)
-    {
-        double[,] newArray = new double[RowSize, ColumnSize];
-
-        for (int i = 0; i < RowSize; i++)
-        {
-            double[] temp;
-
-            if (vectors[i].Dimension < ColumnSize)
-            {
-                temp = GetEqualsSize(vectors[i].VectorComponents);
-            }
-            else
-            {
-                temp = vectors[i].VectorComponents;
-            }
-
-            for (int j = 0; j < ColumnSize; j++)
-            {
-                newArray[i, j] = temp[j];
-            }
-        }
-
-        return newArray;
-    }
-
-    private double[] GetEqualsSize(double[] vectors)
-    {
-        double[] temp = new double[ColumnSize];
-
-        for (int j = 0; j < vectors.Length; j++)
-        {
-            temp[j] = vectors[j];
-        }
-
-        return temp;
-    }
-
-    public override string ToString()// Временная
-    {
-        string s = "";
-
-        foreach (Vector vectors in VectorsM)
-        {
-            s += vectors.ToString() + ", ";
-        }
-
-        return s;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return base.Equals(obj);
-    }
-
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
+        return stringBuilder.ToString();
     }
 
     public int GetRowSize()
     {
-        return RowSize;
+        return VectorsMatrix.Length;
     }
 
     public int GetColumnSize()
     {
-        return ColumnSize;
-    }
-
-    public Vector GetVectorRow(int rowIndex)
-    {
-        if (rowIndex < 0 || rowIndex > ColumnSize)
+        if (VectorsMatrix is null)
         {
-            throw new ArgumentException(nameof(rowIndex));
+            throw new ArgumentNullException();
         }
 
-        return VectorsM[rowIndex];
+        return VectorsMatrix[0].GetSize();
     }
 
-    public void SetVectorRow(Vector vector, int rowIndex)
+    public Vector GetRow(int rowIndex)
     {
-        if (vector.GetSize() != ColumnSize)
+        if (rowIndex < 0 || rowIndex > VectorsMatrix.GetLength(1))
         {
-            throw new ArgumentException(nameof(vector));
+            throw new IndexOutOfRangeException(nameof(rowIndex));
         }
 
-        VectorsM[rowIndex] = new Vector(vector);
+        return VectorsMatrix[rowIndex];
     }
 
-    public Vector GetVectorColumn(int indexColumn)
+    public void SetRow(Vector vector, int rowIndex)
     {
-        if (indexColumn < 0 || indexColumn > ColumnSize)
+        if (vector.GetSize() != VectorsMatrix.GetLength(1))
         {
-            throw new ArgumentException(nameof(indexColumn));
+            throw new IndexOutOfRangeException(nameof(rowIndex));
         }
 
-        double[] temp = new double[VectorsM.Length];
-
-        for (int i = 0; i < temp.Length; i++)
-        {
-            temp[i] = VectorsM[i].VectorComponents[indexColumn];
-        }
-
-        return new Vector(temp);
+        VectorsMatrix[rowIndex] = new Vector(vector);
     }
 
-    public void GetMatrixTransposition()
+    public Vector GetColumn(int columnIndex)
     {
-        double[,] tempMatrix = new double[RowSize, ColumnSize];
-
-        for (int i = 0; i < RowSize; i++)
+        if (columnIndex < 0 || columnIndex > VectorsMatrix.GetLength(1))
         {
-            for (int j = 0; j < ColumnSize; j++)
+            throw new IndexOutOfRangeException(nameof(columnIndex));
+        }
+
+        double[] newColumn = new double[VectorsMatrix.GetLength(0)];
+
+        for (int i = 0; i < newColumn.Length; i++)
+        {
+            newColumn[i] = VectorsMatrix[i].GetComponent(columnIndex);
+        }
+
+        return new Vector(newColumn);
+    }
+
+    public void PerformTransposition()
+    {
+        Vector[] vectors = new Vector[VectorsMatrix.GetLength(0)];
+
+        for (int i = 0; i < VectorsMatrix.GetLength(0); i++)
+        {
+            double[] tempMatrix = new double[VectorsMatrix.GetLength(1)];
+
+            for (int j = 0; j < VectorsMatrix.GetLength(1); j++)
             {
-                tempMatrix[i, j] = VectorsM[j].VectorComponents[i];
+                tempMatrix[j] = VectorsMatrix[j].GetComponent(i);
             }
+
+            vectors[i] = new Vector(tempMatrix);
         }
 
-        VectorsM = new Matrix(tempMatrix).VectorsM;
+        vectors.CopyTo(VectorsMatrix, 0);
     }
 
-    public void GetScalarMultiplication(int scalar)
+    public void MultiplyByScalar(double scalar)
     {
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < VectorsMatrix.GetLength(0); i++)
         {
-            for (int j = 0; j < ColumnSize; j++)
-            {
-                VectorsM[i].VectorComponents[j] *= scalar;
-            }
+            VectorsMatrix[i].MultiplyByScalar(scalar);
         }
     }
 
-    public double GetMatrixDeterminant()
+    public double GetDeterminant()
     {
-        if (RowSize != ColumnSize)
+        if (GetRowSize() != GetColumnSize())
         {
-            throw new ArgumentException();
+            throw new ArgumentException("Данная матрица не является квадратной", nameof(VectorsMatrix));
         }
 
-
-        if (RowSize == 1)
+        if (VectorsMatrix.GetLength(0) == 1)
         {
-            return VectorsM[0].VectorComponents[0];
+            return VectorsMatrix[0].GetComponent(0);
         }
 
-        if (RowSize == 2)
+        if (VectorsMatrix.GetLength(0) == 2)
         {
-            return VectorsM[0].VectorComponents[0] * VectorsM[1].VectorComponents[1] - VectorsM[0].VectorComponents[1] * VectorsM[1].VectorComponents[0];
+            return VectorsMatrix[0].GetComponent(0) * VectorsMatrix[1].GetComponent(1) -
+                   VectorsMatrix[0].GetComponent(1) * VectorsMatrix[1].GetComponent(0);
         }
 
         double determinant = 0;
         int row = 0;
 
-        double[,] VectorsMatrix = new double[VectorsM.Length, VectorsM[0].Dimension];
+        double[,] newVectorsMatrix = new double[VectorsMatrix.Length, VectorsMatrix.Length];
 
-        for (int i = 0; i < VectorsMatrix.GetLength(0); i++)
+        for (int i = 0; i < newVectorsMatrix.GetLength(0); i++)
         {
-            for (int j = 0; j < VectorsMatrix.GetLength(1); j++)
+            for (int j = 0; j < newVectorsMatrix.GetLength(1); j++)
             {
-                VectorsMatrix[i, j] = VectorsM[i].VectorComponents[j];
+                newVectorsMatrix[i, j] = VectorsMatrix[i].GetComponent(j);
             }
         }
 
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < VectorsMatrix.GetLength(0); i++)
         {
-            determinant += Math.Pow(-1, i) * VectorsM[row].VectorComponents[i] * GetColumnDecomposition(VectorsMatrix, row, i);
+            determinant += Math.Pow(-1, i) * VectorsMatrix[row].GetComponent(i) * GetColumnDecomposition(newVectorsMatrix, row, i);
         }
 
         return determinant;
     }
 
-    private double GetColumnDecomposition(double[,] matrix, int row, int column)
+    private static double GetColumnDecomposition(double[,] matrix, int row, int column)
     {
         double[,] minor = GetMinor(matrix, row, column);
 
@@ -323,9 +223,9 @@ internal class Matrix
         return determinant;
     }
 
-    private double[,] GetMinor(double[,] matrix, int row, int column)
+    private static double[,] GetMinor(double[,] matrix, int row, int column)
     {
-        double[,] temp = new double[matrix.GetLength(0) - 1, matrix.GetLength(1) - 1];
+        double[,] newMatrix = new double[matrix.GetLength(0) - 1, matrix.GetLength(1) - 1];
 
         for (int i = 0, j = 0; i < matrix.GetLength(0); i++)
         {
@@ -335,7 +235,7 @@ internal class Matrix
                 {
                     if (k != column)
                     {
-                        temp[j, l] = matrix[i, k];
+                        newMatrix[j, l] = matrix[i, k];
 
                         l++;
                     }
@@ -345,116 +245,149 @@ internal class Matrix
             }
         }
 
-        return temp;
+        return newMatrix;
     }
 
-    public double[,] GetVectorMultiplication(double[,] vector)
+    public Matrix MultiplyByVector(Vector columnVector)
     {
-        if (vector.GetLength(0) != RowSize || vector.GetLength(1) != 1)
+        if (columnVector.GetSize() != VectorsMatrix.Length)
         {
-            throw new ArgumentException(nameof(vector));
+            throw new ArgumentException("Размер вектора не совпадает с размерами матрицы", nameof(columnVector));
         }
 
-        double[,] temp = new double[RowSize, 1];
+        double[,] newMatrix = new double[VectorsMatrix.Length, 1];
 
-        for (int i = 0; i < ColumnSize; i++)
+        for (int i = 0; i < VectorsMatrix.Length; i++)
         {
-            for (int j = 0; j < RowSize; j++)
+            for (int j = 0; j < VectorsMatrix.Length; j++)
             {
-                temp[i, 0] += VectorsM[i].VectorComponents[j] * vector[i, 0];
+                newMatrix[i, 0] += VectorsMatrix[i].GetComponent(j) * columnVector.GetComponent(j);
             }
         }
 
-        return temp;
+        return new Matrix(newMatrix);
     }
 
-    public void GetMatrixSum(Matrix matrix)
-    {
-        if (matrix is null)
-        {
-            throw new ArgumentNullException(nameof(matrix));
-        }
-
-        if (RowSize != matrix.RowSize || ColumnSize != matrix.ColumnSize)
-        {
-            throw new ArgumentException();
-        }
-
-        for (int i = 0; i < RowSize; i++)
-        {
-            for (int j = 0; j < ColumnSize; j++)
-            {
-                VectorsM[i].VectorComponents[j] += matrix.VectorsM[i].VectorComponents[j];
-            }
-        }
-    }
-
-    public void GetMatrixDifference(Matrix matrix)
+    public void Adding(Matrix matrix)
     {
         if (matrix is null)
         {
             throw new ArgumentNullException(nameof(matrix));
         }
 
-        if (RowSize != matrix.RowSize || ColumnSize != matrix.ColumnSize)
+        if (VectorsMatrix.Length != matrix.VectorsMatrix.Length || GetColumnSize() != matrix.GetColumnSize())
         {
-            throw new ArgumentException();
+            throw new ArgumentException("Размерность матриц не свопадают");
         }
 
-        for (int i = 0; i < RowSize; i++)
+        for (int i = 0; i < VectorsMatrix.Length; i++)
         {
-            for (int j = 0; j < ColumnSize; j++)
-            {
-                VectorsM[i].VectorComponents[j] -= matrix.VectorsM[i].VectorComponents[j];
-            }
+            VectorsMatrix[i].Adding(matrix.VectorsMatrix[i]);
+        }
+    }
+
+    public void Subtraction(Matrix matrix)
+    {
+        if (matrix is null)
+        {
+            throw new ArgumentNullException(nameof(matrix));
+        }
+
+        if (VectorsMatrix.Length != matrix.VectorsMatrix.Length || GetColumnSize() != matrix.GetColumnSize())
+        {
+            throw new ArgumentException("Размерность матриц не свопадают");
+        }
+
+        for (int i = 0; i < VectorsMatrix.Length; i++)
+        {
+            VectorsMatrix[i].Subtraction(matrix.VectorsMatrix[i]);
         }
     }
 
     public static Matrix GetMatrixSum(Matrix matrix1, Matrix matrix2)
     {
-        double[,] temp = new double[matrix1.RowSize, matrix1.ColumnSize];
-
-        for (int i = 0; i < matrix1.RowSize; i++)
+        if (matrix1 is null)
         {
-            for (int j = 0; j < matrix1.ColumnSize; j++)
-            {
-                temp[i, j] = matrix1.VectorsM[i].VectorComponents[j] + matrix2.VectorsM[i].VectorComponents[j];
-            }
+            throw new ArgumentNullException(nameof(matrix1));
         }
 
-        return new Matrix(temp);
+        if (matrix2 is null)
+        {
+            throw new ArgumentNullException(nameof(matrix2));
+        }
+
+        if (matrix1.VectorsMatrix.Length != matrix2.VectorsMatrix.Length || matrix1.GetColumnSize() != matrix2.GetColumnSize())
+        {
+            throw new ArgumentException("Размерность матриц не свопадают");
+        }
+
+        Matrix newMatrix = new Matrix(matrix1.GetRowSize(), matrix1.GetColumnSize());
+
+        for (int i = 0; i < matrix1.VectorsMatrix.Length; i++)
+        {
+            newMatrix.VectorsMatrix[i] = Vector.GetSum(matrix1.VectorsMatrix[i], matrix2.VectorsMatrix[i]);
+        }
+
+        return newMatrix;
     }
 
     public static Matrix GetMatrixDifference(Matrix matrix1, Matrix matrix2)
     {
-        double[,] temp = new double[matrix1.RowSize, matrix1.ColumnSize];
-
-        for (int i = 0; i < matrix1.RowSize; i++)
+        if (matrix1 is null)
         {
-            for (int j = 0; j < matrix1.ColumnSize; j++)
-            {
-                temp[i, j] = matrix1.VectorsM[i].VectorComponents[j] - matrix2.VectorsM[i].VectorComponents[j];
-            }
+            throw new ArgumentNullException(nameof(matrix1));
         }
 
-        return new Matrix(temp);
+        if (matrix2 is null)
+        {
+            throw new ArgumentNullException(nameof(matrix2));
+        }
+
+        if (matrix1.VectorsMatrix.Length != matrix2.VectorsMatrix.Length || matrix1.GetColumnSize() != matrix2.GetColumnSize())
+        {
+            throw new ArgumentException("Размерность матриц не свопадают");
+        }
+
+        Matrix newMatrix = new Matrix(matrix1.GetRowSize(), matrix1.GetColumnSize());
+
+        for (int i = 0; i < matrix1.VectorsMatrix.Length; i++)
+        {
+            newMatrix.VectorsMatrix[i] = Vector.GetDifference(matrix1.VectorsMatrix[i], matrix2.VectorsMatrix[i]);
+        }
+
+        return new Matrix(newMatrix);
     }
 
     public static Matrix GetMatrixMultiplication(Matrix matrix1, Matrix matrix2)
     {
-        double[,] temp = new double[matrix1.RowSize, matrix1.ColumnSize];
-
-        for (int i = 0; i < matrix1.RowSize; i++)
+        if (matrix1 is null)
         {
-            for (int j = 0; j < matrix1.ColumnSize; j++)
+            throw new ArgumentNullException(nameof(matrix1));
+        }
+
+        if (matrix2 is null)
+        {
+            throw new ArgumentNullException(nameof(matrix2));
+        }
+
+        if (matrix1.VectorsMatrix.Length != matrix2.VectorsMatrix.Length || matrix1.GetColumnSize() != matrix2.GetColumnSize())
+        {
+            throw new ArgumentException("Размерность матриц не свопадают");
+        }
+
+        double[,] newMatrix = new double[matrix1.VectorsMatrix.Length, matrix1.GetColumnSize()];
+
+        for (int i = 0; i < matrix1.VectorsMatrix.Length; i++)
+        {
+            for (int j = 0; j < matrix1.VectorsMatrix.Length; j++)
             {
-                for (int k = 0; k < matrix1.ColumnSize; k++)
+                for (int k = 0; k < matrix1.GetColumnSize(); k++)
                 {
-                    temp[i, j] += matrix1.VectorsM[i].VectorComponents[k] * matrix2.VectorsM[k].VectorComponents[j];
+                    newMatrix[i, j] += matrix1.VectorsMatrix[i].GetComponent(k) * matrix2.VectorsMatrix[k].GetComponent(j);
                 }
             }
         }
 
-        return new Matrix(temp);
+        return new Matrix(newMatrix);
     }
 }
