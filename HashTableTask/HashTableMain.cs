@@ -4,19 +4,17 @@ internal class HashTableMain
 {
     static void Main(string[] args)
     {
-        List<int> list1 = new List<int> { 13, 44 };
-        List<int> list2 = list1;
+        HashTable<int> hashTable = new HashTable<int>(10) { 0, 1, 2, 3, 4, 5 };
 
-        HashTable<List<int>> hashTable = new HashTable<List<int>>
-        {
-            new List<int> { 3, 4, 2, 4 },
-            new List<int>(9)
-        };
+        hashTable.Add(21);
+        hashTable.Add(22);
+        Console.WriteLine(hashTable);
 
-        hashTable.Add(list1);
-        hashTable.Add(list2);
+        hashTable.Contains(21);
+        hashTable.Remove(22);
+        Console.WriteLine(hashTable);
 
-        hashTable.Contains(list1);
-        hashTable.Remove(list1);
+        hashTable.Clear();
+        Console.WriteLine(hashTable);
     }
 }
