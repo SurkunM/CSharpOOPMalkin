@@ -225,7 +225,12 @@ internal class SinglyLinkedList<T>
         StringBuilder stringBuilder = new StringBuilder();
         string separator = ", ";
 
+        int i = 0;
 
+        for (ListItem<T>? currentItem = _head; currentItem != null; currentItem = currentItem.Next, i++)
+        {
+            stringBuilder.Append(currentItem.Data).Append(separator);
+        }
 
         stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
 
