@@ -6,13 +6,17 @@ internal class ListMain
     {
         SinglyLinkedList<string> singlyList = new SinglyLinkedList<string>();
 
-        singlyList.Add("FourthItem");
-        singlyList.Add("SecondItem");
-        singlyList.Add("FirstItem");
+        singlyList.AddFirst("FourthItem");
+        singlyList.AddFirst("ThirdItem");
+        singlyList.AddFirst("SecondItem");
+        singlyList.AddFirst("FirstItem");
 
-        singlyList.Revers();
+        Console.WriteLine(singlyList);
 
-        singlyList.Remove("FirstItem");
-        singlyList.RemoveAt(0);
+        SinglyLinkedList<string> list = singlyList.Copy();
+        Console.WriteLine(list);
+
+        singlyList.Remove("FourthItem");
+        singlyList.Reverse();
     }
 }
