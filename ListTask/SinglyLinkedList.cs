@@ -1,150 +1,140 @@
-﻿namespace ListTask;
+﻿using System.Text;
+
+namespace ListTask;
 
 internal class SinglyLinkedList<T>
 {
     private ListItem<T>? _head;
 
-    private int _count;
+    public int Count { get; private set; }
 
-    public SinglyLinkedList() { }
-
-    public int GetSize()
+    public T? this[int index]
     {
-        return _count;
-    }
-
-    public T? Get()
-    {
-        if (_head is null)
+        get
         {
-            throw new ArgumentNullException(nameof(_head));
-        }
-
-        return _head.Data;
-    }
-
-    public T? Set(T item, int index)
-    {
-        if (_head is null)
-        {
-            throw new ArgumentNullException(nameof(_head));
-        }
-
-        if (index < 0 || index >= _count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
-
-        int currentIndex = 0;
-        T? currentData = _head.Data;
-
-        for (ListItem<T>? currentItem = _head, previousItem = null;
-            currentItem != null;
-            previousItem = currentItem, currentItem = currentItem.Next, currentIndex++)
-        {
-            if (index == currentIndex)
+            if (index < 0 || index >= Count)
             {
-                if (previousItem is null)
-                {
-                    _head = new ListItem<T>(item);
+                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+            }
 
+            ListItem<T>? currentItem = _head;
+
+            for (int i = 0; currentItem != null; currentItem = currentItem.Next, i++)
+            {
+                if (index == i)
+                {
                     break;
                 }
-
-                previousItem.Next = new ListItem<T>(item, currentItem.Next);
-                currentData = currentItem.Data;
             }
+
+            return currentItem is null ? default : currentItem.Data;
         }
 
-        return currentData;
+        set
+        {
+            if (index < 0 || index >= Count)
+            {
+                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+            }
+
+            int i = 0;
+
+            for (ListItem<T>? currentItem = _head; currentItem != null; currentItem = currentItem.Next, i++)
+            {
+                if (index == i)
+                {
+                    currentItem.Data = value!;
+
+                    return;
+                }
+            }
+        }
     }
 
-    public T? Get(int index)
+    public int GetSize() => Count;
+
+    public T? GetFirstData()
     {
-        if (index < 0 || index >= _count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
-
-        ListItem<T>? currentItem = _head;
-
-        for (int currentIndex = 0; currentItem != null; currentItem = currentItem.Next, currentIndex++)
-        {
-            if (index == currentIndex)
-            {
-                break;
-            }
-        }
-
-        return currentItem!.Data;
+        return this[0];
     }
 
     public T? RemoveAt(int index)
     {
-        if (index < 0 || index >= _count)
+        ListItem<T>? previousItem = GetPreviousListItem(index);
+
+        T? currentListData;
+
+        if (previousItem is null)
         {
-            throw new ArgumentOutOfRangeException(nameof(index));
+            currentListData = _head!.Data;
+            _head = _head.Next;
+        }
+        else
+        {
+            currentListData = previousItem.Next!.Data;
+            previousItem.Next = previousItem.Next!.Next;
         }
 
-        int currentIndex = 0;
-        T? currentData = default;
+        Count--;
+
+        return currentListData;
+    }
+
+    public void AddFirst(T item)
+    {
+        _head = new ListItem<T>(item, _head!);
+        Count++;
+    }
+
+    private ListItem<T>? GetPreviousListItem(int index)
+    {
+        if (index < 0 || index >= Count)
+        {
+            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+        }
+
+        int i = 0;
 
         for (ListItem<T>? currentItem = _head, previousItem = null;
             currentItem != null;
-            previousItem = currentItem, currentItem = currentItem.Next, currentIndex++)
+            previousItem = currentItem, currentItem = currentItem!.Next, i++)
         {
-            if (index == currentIndex)
+            if (index == i)
             {
-                if (previousItem is null)
-                {
-                    _head = null;
-                    break;
-                }
-
-                previousItem.Next = currentItem.Next;
-                currentData = currentItem.Data;
+                return previousItem;
             }
         }
 
-        return currentData;
+        return null;
     }
 
-    public void Add(T item)
+    public void Add(T item, int index)
     {
+        if (index < 0 || index > Count)
+        {
+            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+        }
+
         if (_head is null)
         {
             _head = new ListItem<T>(item);
         }
         else
         {
-            _head = new ListItem<T>(item, _head);
-        }
+            ListItem<T>? previousItem = GetPreviousListItem(index);
 
-        _count++;
-    }
 
-    public void Add(T item, int index)
-    {
-        if (index < 0 || index > _count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
-
-        int currentIndex = 0;
-
-        for (ListItem<T>? currentItem = _head, previousItem = null;
-            currentItem != null || currentIndex < _count;
-            previousItem = currentItem, currentItem = currentItem!.Next, currentIndex++)
-        {
-            if (index == currentIndex)
+            if (previousItem is null)
             {
-                previousItem!.Next = new ListItem<T>(item, currentItem);
-
-                _count++;
-
-                break;
+                _head = _head!.Next;
+            }
+            else
+            {
+                previousItem!.Next = new ListItem<T>(item, previousItem.Next!);
             }
         }
+
+        Count++;
     }
 
     public bool Remove(T item)
@@ -164,7 +154,7 @@ internal class SinglyLinkedList<T>
                     previousItem.Next = currentItem.Next;
                 }
 
-                _count--;
+                Count--;
 
                 return true;
             }
@@ -173,7 +163,7 @@ internal class SinglyLinkedList<T>
         return false;
     }
 
-    public T? Remove()
+    public T? RemoveFirst()
     {
         if (_head is null)
         {
@@ -181,38 +171,67 @@ internal class SinglyLinkedList<T>
         }
 
         T? oldItem = _head.Data;
+        _head = _head.Next;
 
-        if (_head.Next is null)
-        {
-            _head = null;
-        }
-        else
-        {
-            _head = _head.Next;
-        }
-
-        _count--;
+        Count--;
 
         return oldItem;
     }
 
-    public void Revers()
+    public void Reverse()
+    {
+        if (Count <= 1)
+        {
+            return;
+        }
+
+        for (ListItem<T>? previousItem = null, currentItem = _head, nextItem = currentItem!.Next;
+            currentItem != null;
+            previousItem = currentItem, currentItem = nextItem, nextItem = currentItem!.Next)
+        {
+            currentItem.Next = previousItem;
+
+            if (nextItem is null)
+            {
+                currentItem.Next = previousItem;
+                _head = currentItem;
+
+                return;
+            }
+        }
+    }
+
+    public SinglyLinkedList<T> Copy()
     {
         SinglyLinkedList<T> newLinkedList = new SinglyLinkedList<T>();
 
         for (ListItem<T>? currentItem = _head; currentItem != null; currentItem = currentItem.Next)
         {
-            newLinkedList.Add(currentItem.Data!);
+            newLinkedList.AddFirst(currentItem.Data);
         }
 
-        _head = newLinkedList._head;
+        newLinkedList.Reverse();
+
+        return newLinkedList;
     }
 
-    public void Copy(SinglyLinkedList<T> newLinkedList)
+    public override string ToString()
     {
-        for (int i = _count - 1; i >= 0; i--)
+        if (Count <= 0)
         {
-            newLinkedList.Add(Get(i)!);
+            return "";
         }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        string separator = ", ";
+
+        for (int i = 0; i < Count; i++)
+        {
+            stringBuilder.Append(this[i]).Append(separator);
+        }
+
+        stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
+
+        return stringBuilder.ToString();
     }
 }
