@@ -6,11 +6,11 @@ internal class RangeMain
     {
         if (isInside)
         {
-            Console.WriteLine("Число принадлежит диапазону длинна которой {0}", rangeLength);
+            Console.WriteLine("Число принадлежит диапазону длина которого {0}", rangeLength);
         }
         else
         {
-            Console.WriteLine("Число не принадлежит диапазону длинна которой {0}", rangeLength);
+            Console.WriteLine("Число не принадлежит диапазону длина которого {0}", rangeLength);
         }
     }
 
@@ -29,19 +29,26 @@ internal class RangeMain
 
     public static void PrintRangesArray(Range[] rangesArray)
     {
-        foreach (Range range in rangesArray)
+        if (rangesArray.Length == 0)
         {
-            Console.WriteLine(range);
+            Console.WriteLine("(0)");
+        }
+        else
+        {
+            foreach (Range range in rangesArray)
+            {
+                Console.WriteLine(range);
+            }
         }
     }
 
     static void Main(string[] args)
     {
-        Range range1 = new Range(5, 20);
+        Range range1 = new Range(5, 15);
 
         PrintIsInside(range1.IsInside(5), range1.GetLength());
 
-        Range range2 = new Range(5, 15);
+        Range range2 = new Range(5, 20);
 
         PrintIntersection(range1.GetIntersection(range2));
 
