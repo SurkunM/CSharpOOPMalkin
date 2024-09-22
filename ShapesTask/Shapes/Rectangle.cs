@@ -4,6 +4,8 @@ internal class Rectangle : IShape
 {
     private const int IdenticalSidesCount = 2;
 
+    private const double epsilon = 1.0e-10;
+
     public double Width { get; set; }
 
     public double Height { get; set; }
@@ -64,6 +66,6 @@ internal class Rectangle : IShape
 
         Rectangle rectangle = (Rectangle)obj;
 
-        return Width == rectangle.Width && Height == rectangle.Height;
+        return Math.Abs(Width - rectangle.Width) <= epsilon && Math.Abs(Height - rectangle.Height) <= epsilon;
     }
 }

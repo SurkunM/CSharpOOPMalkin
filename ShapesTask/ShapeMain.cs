@@ -1,4 +1,4 @@
-﻿using ShapesTask.Compares;
+﻿using ShapesTask.Comparers;
 using ShapesTask.Shapes;
 
 namespace ShapesTask;
@@ -23,6 +23,6 @@ internal class ShapeMain
         Console.WriteLine("Фигура с максимальной площадью = {0}", shapes[^1]);
 
         Array.Sort(shapes, new ShapesPerimeterComparer());
-        Console.WriteLine("Фигура со второй по величине периметром = {0}", shapes[^2]);
+        Console.WriteLine("Фигура со вторым по величине периметром = {0}", shapes[^2]);
     }
 }

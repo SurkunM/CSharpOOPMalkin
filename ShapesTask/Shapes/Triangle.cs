@@ -2,6 +2,8 @@
 
 internal class Triangle : IShape
 {
+    private const double epsilon = 1.0e-10;
+
     public double X1 { get; set; }
 
     public double Y1 { get; set; }
@@ -41,7 +43,7 @@ internal class Triangle : IShape
 
     public double GetPerimeter()
     {
-        if ((X1 - X3) * (Y2 - Y3) == (X2 - X3) * (Y1 - Y3))
+        if (Math.Abs((X1 - X3) * (Y2 - Y3) - (X2 - X3) * (Y1 - Y3)) <= epsilon)
         {
             return 0;
         }
@@ -94,8 +96,8 @@ internal class Triangle : IShape
 
         Triangle triangle = (Triangle)obj;
 
-        return X1 == triangle.X1 && Y1 == triangle.Y1 &&
-               X2 == triangle.X2 && Y2 == triangle.Y2 &&
-               X3 == triangle.X3 && Y3 == triangle.Y3;
+        return Math.Abs(X1 - triangle.X1) <= epsilon && Math.Abs(Y1 - triangle.Y1) <= epsilon &&
+               Math.Abs(X2 - triangle.X2) <= epsilon && Math.Abs(Y2 - triangle.Y2) <= epsilon &&
+               Math.Abs(X3 - triangle.X3) <= epsilon && Math.Abs(Y3 - triangle.Y3) <= epsilon;
     }
 }

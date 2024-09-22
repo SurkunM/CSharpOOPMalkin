@@ -2,6 +2,8 @@
 
 internal class Circle : IShape
 {
+    private const double epsilon = 1.0e-10;
+
     public double Radius { get; set; }
 
     public Circle(double radius)
@@ -58,6 +60,6 @@ internal class Circle : IShape
 
         Circle circle = (Circle)obj;
 
-        return Radius == circle.Radius;
+        return Math.Abs(Radius - circle.Radius) <= epsilon;
     }
 }

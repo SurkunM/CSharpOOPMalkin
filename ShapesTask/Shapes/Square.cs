@@ -4,6 +4,8 @@ internal class Square : IShape
 {
     private const int SidesCount = 4;
 
+    private const double epsilon = 1.0e-10;
+
     public double SideLength { get; set; }
 
     public Square(double sideLength)
@@ -60,6 +62,6 @@ internal class Square : IShape
 
         Square square = (Square)obj;
 
-        return SideLength == square.SideLength;
+        return Math.Abs(SideLength - square.SideLength) <= epsilon;
     }
 }
