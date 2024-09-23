@@ -6,6 +6,31 @@ public class Vector
 {
     private double[] _components;
 
+    public int Size { get => _components.Length; }
+
+    public double this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _components.Length)
+            {
+                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ массива от 0 до {_components.Length}");
+            }
+
+            return _components[index];
+        }
+
+        set
+        {
+            if (index < 0 || index >= _components.Length)
+            {
+                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ массива от 0 до {_components.Length}");
+            }
+
+            _components[index] = value;
+        }
+    }
+
     public Vector(int dimension)
     {
         if (dimension <= 0)
@@ -37,7 +62,7 @@ public class Vector
 
         if (components.Length == 0)
         {
-            throw new ArgumentException("Размерность вектора не может быть меньше или равной нулю.", nameof(components.Length));
+            throw new ArgumentException("Размерность вектора не может быть меньше или равной нулю.", nameof(components));
         }
 
         _components = new double[components.Length];
@@ -55,6 +80,11 @@ public class Vector
         if (components is null)
         {
             throw new ArgumentNullException(nameof(components));
+        }
+
+        if (components.Length == 0)
+        {
+            throw new ArgumentException("Длина входящего массива не может быть равной нулю", nameof(components));
         }
 
         _components = new double[dimension];
@@ -82,7 +112,7 @@ public class Vector
 
     public override int GetHashCode()
     {
-        int prime = 37;
+        const int prime = 37;
         int hash = 1;
 
         foreach (double component in _components)
@@ -111,26 +141,19 @@ public class Vector
         {
             return false;
         }
-        else
+
+        for (int i = 0; i < _components.Length; i++)
         {
-            for (int i = 0; i < _components.Length; i++)
+            if (_components[i] != vector._components[i])
             {
-                if (_components[i] != vector._components[i])
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
         return true;
     }
 
-    public int GetSize()
-    {
-        return _components.Length;
-    }
-
-    public void Adding(Vector vector)
+    public void GetAddition(Vector vector)
     {
         if (vector is null)
         {
@@ -148,7 +171,7 @@ public class Vector
         }
     }
 
-    public void Subtraction(Vector vector)
+    public void GetSubtraction(Vector vector)
     {
         if (vector is null)
         {
@@ -181,34 +204,14 @@ public class Vector
 
     public double GetLength()
     {
-        double vectorModulus = 0;
+        double sum = 0;
 
         foreach (double component in _components)
         {
-            vectorModulus += component * component;
+            sum += component * component;
         }
 
-        return Math.Sqrt(vectorModulus);
-    }
-
-    public double GetComponent(int index)
-    {
-        if (index < 0 || index >= _components.Length)
-        {
-            throw new IndexOutOfRangeException(nameof(index));
-        }
-
-        return _components[index];
-    }
-
-    public void SetComponent(int index, double component)
-    {
-        if (index < 0 || index >= _components.Length)
-        {
-            throw new IndexOutOfRangeException(nameof(index));
-        }
-
-        _components[index] = component;
+        return Math.Sqrt(sum);
     }
 
     public static Vector GetSum(Vector vector1, Vector vector2)
@@ -223,11 +226,11 @@ public class Vector
             throw new ArgumentNullException(nameof(vector2));
         }
 
-        Vector newVector = new Vector(vector1);
+        Vector resultVector = new Vector(vector1);
 
-        newVector.Adding(vector2);
+        resultVector.GetAddition(vector2);
 
-        return newVector;
+        return resultVector;
     }
 
     public static Vector GetDifference(Vector vector1, Vector vector2)
@@ -242,11 +245,11 @@ public class Vector
             throw new ArgumentNullException(nameof(vector2));
         }
 
-        Vector newVector = new Vector(vector1);
+        Vector resultVector = new Vector(vector1);
 
-        newVector.Subtraction(vector2);
+        resultVector.GetSubtraction(vector2);
 
-        return newVector;
+        return resultVector;
     }
 
     public static double GetScalarProduct(Vector vector1, Vector vector2)

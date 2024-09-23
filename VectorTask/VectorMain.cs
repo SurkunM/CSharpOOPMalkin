@@ -13,20 +13,20 @@ internal class VectorMain
         Console.WriteLine("Вектор 1: {0}", vector1);
         Console.WriteLine("Вектор 2: {0}", vector2);
 
-        vector1.Adding(vector2);
+        vector1.GetAddition(vector2);
         Console.WriteLine("Сумма векторов = {0}", vector1);
 
-        vector1.Subtraction(vector2);
+        vector1.GetSubtraction(vector2);
         Console.WriteLine("Разность векторов = {0}", vector1);
 
         vector1.MultiplyByScalar(2);
         Console.WriteLine("Умножение вектора на скаляр = {0}", vector1);
 
         vector1.Reverse();
-        Console.WriteLine("Разворот {0} мерного вектора = {1}", vector1.GetSize(), vector1);
+        Console.WriteLine("Разворот {0} мерного вектора = {1}", vector1.Size, vector1);
 
         Console.WriteLine("Длинна вектора = {0}", vector1.GetLength());
-        Console.WriteLine("Первый компонент вектора {0} = {1}", vector1, vector1.GetComponent(0));
+        Console.WriteLine("Первый компонент вектора {0} = {1}", vector1, vector1[0]);
 
         Vector vectorsSum = Vector.GetSum(vector1, vector2);
         Console.WriteLine("Сумма векторов = {0}", vectorsSum);
