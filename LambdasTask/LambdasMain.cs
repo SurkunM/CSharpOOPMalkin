@@ -2,9 +2,10 @@
 
 internal class LambdasMain
 {
-    public static IEnumerable<double> GetSqrt()
+    public static IEnumerable<double> GetSquareRoot()
     {
         int i = 0;
+
         while (true)
         {
             yield return Math.Sqrt(i);
@@ -24,53 +25,38 @@ internal class LambdasMain
             new ("Ivan", 22)
         };
 
-        List<string> uniquePerson = personsList
-                                        .Select(person => person.Name)
-                                        .Distinct()
-                                        .ToList();
+        List<string> uniqueNamesList = personsList
+            .Select(person => person.Name)
+            .Distinct()
+            .ToList();
 
-        uniquePerson.ForEach(person =>
-        {
-            if (person.Equals(uniquePerson.First()))
-            {
-                Console.Write("Имена: ");
-            }
-            else if (person.Equals(uniquePerson.Last()))
-            {
-                Console.WriteLine($"{person}.");
-            }
-            else
-            {
-                Console.Write($"{person}, ");
-            }
-        });
+        Console.WriteLine("Имена: {0}", string.Join(", ", uniqueNamesList));
 
-        double personsAgeAverage = personsList
-                                        .Where(person => person.Age < 18)
-                                        .Average(person => person.Age);
+        List<Person> under18PersonsList = personsList
+            .Where(person => person.Age < 18)
+            .ToList();
 
-        Dictionary<string, double> personsDictionary = personsList
-                                                            .GroupBy(person => person.Name)
-                                                            .ToDictionary(person => person.Key,
-                                                             person => person.Average(p => p.Age));
+        double under18PersonsAverageAge = under18PersonsList.Count == 0 ? 0 : under18PersonsList.Average(person => person.Age);
 
-        IEnumerable<Person> persons = personsList
-                                            .Where(person => person.Age >= 20 && person.Age < 45)
-                                            .OrderByDescending(persons => persons.Age);
+        Console.WriteLine("Средний возраст: {0}", under18PersonsAverageAge);
 
-        int count = Convert.ToInt32(Console.ReadLine());
-        int i = 0;
+        Dictionary<string, double> personsByGroupNameAndAverageAge = personsList
+            .GroupBy(person => person.Name)
+            .ToDictionary(personsName => personsName.Key, personsAge => personsAge.Average(p => p.Age));
 
-        foreach (double number in GetSqrt())
-        {
-            Console.WriteLine(number);
+        Console.WriteLine("Сгруппированный список сотрудников по именам и их средний возраст: {0}", string.Join(", ", personsByGroupNameAndAverageAge));
 
-            if (i == count)
-            {
-                break;
-            }
+        IEnumerable<Person> between18And45AgePersons = personsList
+            .Where(person => person.Age >= 20 && person.Age <= 45)
+            .OrderByDescending(persons => persons.Age);
 
-            i++;
-        }
+        Console.WriteLine("Список сотрудников возраст которых от 20 до 45: {0}", string.Join(", ", between18And45AgePersons.Select(p => p.Name)));
+
+        Console.Write("Введите количество элементов для которых нужно вычислить квадратные корни: ");
+        int elementsCount = Convert.ToInt32(Console.ReadLine());
+
+        IEnumerable<double> elements = GetSquareRoot().Take(elementsCount);
+
+        Console.WriteLine("Результат вычисления {0}", string.Join(", ", elements.ToList()));
     }
 }
