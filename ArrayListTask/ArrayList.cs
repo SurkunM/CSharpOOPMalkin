@@ -6,9 +6,9 @@ internal class ArrayList<T> : IList<T>
 {
     private T[] _items = [];
 
-    public int Count { get; private set; }
-
     private int _modCount;
+
+    public int Count { get; private set; }
 
     public T this[int index]
     {
@@ -16,7 +16,7 @@ internal class ArrayList<T> : IList<T>
         {
             if (index < 0 || index >= Count)
             {
-                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
             }
 
             return _items[index];
@@ -26,7 +26,7 @@ internal class ArrayList<T> : IList<T>
         {
             if (index < 0 || index >= Count)
             {
-                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
             }
 
             _items[index] = value;
@@ -43,7 +43,7 @@ internal class ArrayList<T> : IList<T>
         {
             if (value < Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), "Вместимость списка не может быть меньше количества существующих элементов");
+                throw new ArgumentOutOfRangeException(nameof(value), $"Входящее значение: {value} не может быть меньше текущего размера списка: {Count}");
             }
 
             Array.Resize(ref _items, value);
@@ -86,8 +86,10 @@ internal class ArrayList<T> : IList<T>
         {
             _items = new T[1];
         }
-
-        Array.Resize(ref _items, _items.Length * 2);
+        else
+        {
+            Array.Resize(ref _items, _items.Length * 2);
+        }
     }
 
     public void Clear()
@@ -97,7 +99,7 @@ internal class ArrayList<T> : IList<T>
             Array.Clear(_items, 0, Count);
 
             Count = 0;
-            _modCount = 0;
+            _modCount++;
         }
     }
 
@@ -113,9 +115,14 @@ internal class ArrayList<T> : IList<T>
             throw new ArgumentNullException(nameof(array));
         }
 
-        if (index < 0 || index >= array.Length)
+        if (index < 0)
         {
-            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ входящего массива от 0 до {array.Length}");
+        }
+
+        if (array.Length - index < Count)
+        {
+            throw new ArgumentException($"Недостаточно места в переданном массиве от текущего положения {nameof(index)} до конца длины массива {nameof(array)} ", nameof(array));
         }
 
         Array.Copy(_items, 0, array, index, Count);
@@ -130,7 +137,7 @@ internal class ArrayList<T> : IList<T>
     {
         if (index < 0 || index > Count)
         {
-            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
         }
 
         if (Count >= _items.Length)
@@ -148,11 +155,11 @@ internal class ArrayList<T> : IList<T>
 
     public bool Remove(T item)
     {
-        int removeItemIndex = IndexOf(item);
+        int removedItemIndex = IndexOf(item);
 
-        if (removeItemIndex >= 0)
+        if (removedItemIndex >= 0)
         {
-            RemoveAt(removeItemIndex);
+            RemoveAt(removedItemIndex);
 
             return true;
         }
@@ -164,7 +171,7 @@ internal class ArrayList<T> : IList<T>
     {
         if (index < 0 || index >= Count)
         {
-            throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ коллекции");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
         }
 
         Array.Copy(_items, index + 1, _items, index, Count - index - 1);
@@ -172,7 +179,7 @@ internal class ArrayList<T> : IList<T>
         _items[Count - 1] = default!;
 
         Count--;
-        _modCount--;
+        _modCount++;
     }
 
     public void TrimExcess()
@@ -183,16 +190,15 @@ internal class ArrayList<T> : IList<T>
         }
     }
 
-
     public IEnumerator<T> GetEnumerator()
     {
-        int mod = _modCount;
+        int currentMod = _modCount;
 
         for (int i = 0; i < Count; i++)
         {
-            if (mod != _modCount)
+            if (currentMod != _modCount)
             {
-                throw new InvalidCastException("Произошло изменение в элементах коллекции за время обхода");
+                throw new InvalidOperationException("Произошло изменение в элементах коллекции за время обхода");
             }
 
             yield return _items[i];
@@ -206,7 +212,7 @@ internal class ArrayList<T> : IList<T>
 
     public override string ToString()
     {
-        return string.Join(", ", _items);
+        return $"[{string.Join(", ", _items)}]";
     }
 
     public override bool Equals(object? obj)
@@ -223,18 +229,23 @@ internal class ArrayList<T> : IList<T>
 
         ArrayList<T> list = (ArrayList<T>)obj;
 
+        if (Count != list.Count)
+        {
+            return false;
+        }
+
         for (int i = 0; i < Count; i++)
         {
             if (_items[i] is null)
             {
-                if (!ReferenceEquals(_items[i], list[i]))
+                if (!Equals(_items[i], list[i]))
                 {
                     return false;
                 }
             }
             else
             {
-                if (!_items[i]!.Equals(list[i]))
+                if (!Equals(_items[i], list[i]))
                 {
                     return false;
                 }
@@ -246,16 +257,12 @@ internal class ArrayList<T> : IList<T>
 
     public override int GetHashCode()
     {
-        int prime = 37;
+        const int prime = 37;
         int hash = 1;
 
         foreach (T item in _items)
         {
-            if (item is null)
-            {
-                hash = prime * hash + 0;
-            }
-            else
+            if (item is not null)
             {
                 hash = prime * hash + item.GetHashCode();
             }

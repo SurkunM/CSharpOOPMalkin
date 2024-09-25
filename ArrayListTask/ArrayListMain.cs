@@ -25,5 +25,8 @@ internal class ArrayListMain
 
         list1.Clear();
         list1.TrimExcess();
+
+        Console.WriteLine(list1);
+        Console.WriteLine(list2);
     }
 }
