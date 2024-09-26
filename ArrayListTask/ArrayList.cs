@@ -50,10 +50,7 @@ internal class ArrayList<T> : IList<T>
         }
     }
 
-    public bool IsReadOnly
-    {
-        get => false;
-    }
+    public bool IsReadOnly => false;
 
     public ArrayList() { }
 
@@ -192,11 +189,11 @@ internal class ArrayList<T> : IList<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        int currentMod = _modCount;
+        int startModCount = _modCount;
 
         for (int i = 0; i < Count; i++)
         {
-            if (currentMod != _modCount)
+            if (startModCount != _modCount)
             {
                 throw new InvalidOperationException("Произошло изменение в элементах коллекции за время обхода");
             }
