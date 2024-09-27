@@ -114,7 +114,7 @@ internal class ArrayList<T> : IList<T>
 
         if (index < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ входящего массива от 0 до {array.Length}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Значение параметра {nameof(index)} меньше нуля");
         }
 
         if (array.Length - index < Count)
