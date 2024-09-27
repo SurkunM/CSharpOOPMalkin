@@ -5,36 +5,13 @@ namespace HashTableTask;
 
 internal class HashTable<T> : ICollection<T>
 {
-    private List<T>[] _lists;
-
-    public int Count { get; private set; }
+    private readonly List<T>[] _lists;
 
     private int _modCount;
 
-    public T this[int index]
-    {
-        get
-        {
-            if (index < 0 || index >= _lists.Length)
-            {
-                throw new IndexOutOfRangeException($"Индекс {nameof(index)} находится за пределами границ хэш-таблицы");
-            }
+    public int Count { get; private set; }
 
-            return _lists[index].Last();
-        }
-
-        set
-        {
-            _lists[index].Add(value);
-
-            _modCount++;
-        }
-    }
-
-    public bool IsReadOnly
-    {
-        get => false;
-    }
+    public bool IsReadOnly => false;
 
     public HashTable(int capacity)
     {
@@ -70,26 +47,25 @@ internal class HashTable<T> : ICollection<T>
 
     public void Clear()
     {
-        if (Count > 0)
+        if (Count <= 0)
         {
-            foreach (List<T> list in _lists)
-            {
-                if (list is not null)
-                {
-                    list.Clear();
-                }
-            }
-
-            Count = 0;
-            _modCount = 0;
+            return;
         }
+
+        foreach (List<T> list in _lists)
+        {
+            list?.Clear();
+        }
+
+        Count = 0;
+        _modCount++;
     }
 
     public bool Contains(T item)
     {
-        int i = GetListIndex(item);
+        int index = GetListIndex(item);
 
-        return _lists[i] is not null && _lists[i].Contains(item);
+        return _lists[index] is not null && _lists[index].Contains(item);
     }
 
     public void CopyTo(T[] array, int arrayIndex)
@@ -99,9 +75,14 @@ internal class HashTable<T> : ICollection<T>
             throw new ArgumentNullException(nameof(array));
         }
 
-        if (arrayIndex < 0 || array.Length < (arrayIndex + Count))
+        if (arrayIndex < 0)
         {
-            throw new IndexOutOfRangeException($"Число копируемых элементов начиная с индекса {nameof(arrayIndex)} больше чем длина массива {nameof(array)}");
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Значение параметра {nameof(arrayIndex)} меньше нуля");
+        }
+
+        if (array.Length - arrayIndex < Count)
+        {
+            throw new ArgumentException($"Недостаточно места в переданном массиве от текущего положения {nameof(arrayIndex)} до конца длины массива {nameof(array)}", nameof(array));
         }
 
         int i = arrayIndex;
@@ -118,17 +99,19 @@ internal class HashTable<T> : ICollection<T>
 
     public bool Remove(T item)
     {
-        if (Count > 0)
+        if (Count <= 0)
         {
-            int i = GetListIndex(item);
+            return false;
+        }
 
-            if (_lists[i] is not null && _lists[i].Remove(item))
-            {
-                Count--;
-                _modCount--;
+        int index = GetListIndex(item);
 
-                return true;
-            }
+        if (_lists[index] is not null && _lists[index].Remove(item))
+        {
+            Count--;
+            _modCount++;
+
+            return true;
         }
 
         return false;
@@ -138,7 +121,7 @@ internal class HashTable<T> : ICollection<T>
     {
         if (Count <= 0)
         {
-            return "";
+            return "()";
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -165,7 +148,7 @@ internal class HashTable<T> : ICollection<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        int modCount = _modCount;
+        int startModCount = _modCount;
 
         foreach (List<T> list in _lists)
         {
@@ -176,9 +159,9 @@ internal class HashTable<T> : ICollection<T>
 
             foreach (T item in list)
             {
-                if (modCount != _modCount)
+                if (startModCount != _modCount)
                 {
-                    throw new InvalidCastException("Произошло изменение в элементах коллекции за время обхода");
+                    throw new InvalidOperationException("Произошло изменение в элементах коллекции за время обхода");
                 }
 
                 yield return item;
@@ -188,6 +171,6 @@ internal class HashTable<T> : ICollection<T>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return _lists.GetEnumerator();
+        return ((IEnumerable)this).GetEnumerator();
     }
 }
