@@ -254,14 +254,14 @@ internal class ArrayList<T> : IList<T>
 
     public override int GetHashCode()
     {
-        const int prime = 37;
+        const int Prime = 37;
         int hash = 1;
 
         foreach (T item in _items)
         {
             if (item is not null)
             {
-                hash = prime * hash + item.GetHashCode();
+                hash = Prime * hash + item.GetHashCode();
             }
         }
 
