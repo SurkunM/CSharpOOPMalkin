@@ -127,7 +127,7 @@ internal class HashTable<T> : ICollection<T>
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.Append('(');
-        string separator = ", ";
+        const string Separator = ", ";
 
         foreach (List<T> list in _lists)
         {
@@ -135,12 +135,12 @@ internal class HashTable<T> : ICollection<T>
             {
                 foreach (T item in list)
                 {
-                    stringBuilder.Append(item).Append(separator);
+                    stringBuilder.Append(item).Append(Separator);
                 }
             }
         }
 
-        stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
+        stringBuilder.Remove(stringBuilder.Length - Separator.Length, Separator.Length);
         stringBuilder.Append(')');
 
         return stringBuilder.ToString();
