@@ -49,7 +49,7 @@ internal class ArrayListHomeMain
     {
         try
         {
-            List<string> stringsList = GetListFromFile("..\\..\\..\\TextFile\\Text.txt");
+            List<string> stringsList = GetListFromFile("");
 
             Console.WriteLine(string.Join(Environment.NewLine, stringsList));
         }
@@ -60,6 +60,10 @@ internal class ArrayListHomeMain
         catch (ArgumentNullException)
         {
             Console.WriteLine("Не найден путь к файлу");
+        }
+        catch (ArgumentException)
+        {
+            Console.WriteLine("Путь к чтению файла не может иметь пустое значение");
         }
 
         List<int> numbers = new List<int> { 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
