@@ -11,7 +11,7 @@ internal class ListItem<T>
         Data = data;
     }
 
-    public ListItem(T data, ListItem<T> next)
+    public ListItem(T data, ListItem<T>? next)
     {
         Data = data;
         Next = next;

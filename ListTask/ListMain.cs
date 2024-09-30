@@ -16,7 +16,9 @@ internal class ListMain
         SinglyLinkedList<string> list = singlyList.Copy();
         Console.WriteLine(list);
 
-        singlyList.Remove("FourthItem");
         singlyList.Reverse();
+        Console.WriteLine(singlyList);
+
+        singlyList.Remove("FourthItem");
     }
 }
