@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/CsvTask/File/htmlFile.html
+/CSVTask/File/innerText.txt
+/CSVTask/File/outText.txt
+/CsvTask/File/text.txt
+/CsvTask/Properties/launchSettings.json

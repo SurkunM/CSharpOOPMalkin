@@ -1,118 +1,148 @@
-﻿using System.Text;
-
-namespace CSVTask;
+﻿namespace CsvTask;
 
 internal class CSVMain
 {
-    public static void ConvertingCSV(string inputFile, string outputFile)
+    public static void ConvertTextToCsv(string inputFile, string outputFile)
     {
-        try
+        using StreamReader reader = new StreamReader(inputFile);
+        using StreamWriter writer = new StreamWriter(outputFile);
+
+        const char comma = ',';
+        const char quote = '\"';
+        const string doubleTabulation = "\t\t";
+
+        string title = "HTML file";
+        string fileName = "Csv task";
+        string content = "Table";
+        string charset = "UTF-8";
+
+        bool isQuotesOpen = false;
+        string? currentLine;
+
+        writer.WriteLine("<!DOCTYPE HTML>");
+        writer.WriteLine("<html>");
+        writer.WriteLine("\t<head>");
+
+        writer.WriteLine($"{doubleTabulation}<meta charset=\"{charset}\">");
+
+        writer.Write($"{doubleTabulation}<title>");
+        writer.Write(title);
+        writer.WriteLine("</title>");
+
+        writer.WriteLine($"{doubleTabulation}<meta name=\"{fileName}\" content=\"{content}\">");
+
+        writer.WriteLine("\t</head>");
+        writer.WriteLine("\t<body>");
+        writer.WriteLine($"{doubleTabulation}<table>");
+
+        while ((currentLine = reader.ReadLine()) != null)
         {
-            using StreamReader reader = new StreamReader(inputFile);
-            using StreamWriter writer = new StreamWriter(outputFile);
-
-            char common = ',';
-            char quotes = '\"';
-            bool open = false;
-
-            string? currentLine;
-
-            writer.WriteLine("<table>");
-
-            while ((currentLine = reader.ReadLine()) != null)
+            if (!isQuotesOpen)
             {
-                StringBuilder stringBuilder = new StringBuilder();
+                writer.WriteLine($"{doubleTabulation}\t<tr>");
+            }
 
-                currentLine = currentLine.Replace("&", "&amp").Replace(">", "&gt").Replace("<", "&lt");
+            bool isNewCell = true;
 
-                if (!open)
+            for (int i = 0; i < currentLine.Length; i++)
+            {
+                if (currentLine[i] == '&')
                 {
-                    stringBuilder.AppendLine("\t<tr>");
+                    writer.Write("&amp;");
                 }
-
-                bool isNewCell = true;
-
-                for (int i = 0; i < currentLine.Length; i++)
+                else if (currentLine[i] == '<')
                 {
-                    if (!open)
+                    writer.Write("&lt;");
+                }
+                else if (currentLine[i] == '>')
+                {
+                    writer.Write("&gt;");
+                }
+                else if (!isQuotesOpen)
+                {
+                    if (currentLine[i] == comma)
                     {
-                        if (currentLine[i] == common)
+                        writer.WriteLine("</td>");
+                        isNewCell = true;
+                    }
+                    else if (isNewCell)
+                    {
+                        if (currentLine[i] == quote)
                         {
-                            stringBuilder.AppendLine("</td>");
-                            isNewCell = true;
-                        }
-                        else if (isNewCell)
-                        {
-                            if (currentLine[i] == quotes)
-                            {
-                                open = true;
-                                stringBuilder.Append("\t\t<td>");
-                            }
-                            else
-                            {
-                                stringBuilder.Append($"\t\t<td>{currentLine[i]}");
-                            }
-
-                            isNewCell = false;
+                            writer.Write($"{doubleTabulation}{doubleTabulation}<td>");
+                            isQuotesOpen = true;
                         }
                         else
                         {
-                            stringBuilder.Append(currentLine[i]);
+                            writer.Write($"{doubleTabulation}{doubleTabulation}<td>{currentLine[i]}");
+                        }
+
+                        isNewCell = false;
+                    }
+                    else
+                    {
+                        writer.Write(currentLine[i]);
+
+                        if (i == currentLine.Length - 1)
+                        {
+                            writer.WriteLine("</td>");
+                        }
+                    }
+                }
+                else
+                {
+                    if (currentLine[i] == quote)
+                    {
+                        if (i + 1 < currentLine.Length && currentLine[i + 1] == quote)
+                        {
+                            writer.Write(quote);
+                            i++;
+                        }
+                        else
+                        {
+                            isQuotesOpen = false;
 
                             if (i == currentLine.Length - 1)
                             {
-                                stringBuilder.AppendLine("</td>");
+                                writer.WriteLine("</td>");
                             }
                         }
                     }
                     else
                     {
-                        if (currentLine[i] == quotes)
-                        {
-                            if (i + 1 < currentLine.Length && currentLine[i + 1] == quotes)
-                            {
-                                stringBuilder.Append(quotes);
-                                i++;
-                            }
-                            else
-                            {
-                                open = false;
-
-                                if (i == currentLine.Length - 1)
-                                {
-                                    stringBuilder.AppendLine("</td>");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            stringBuilder.Append(currentLine[i]);
-                        }
+                        writer.Write(currentLine[i]);
                     }
                 }
-
-                if (open)
-                {
-                    stringBuilder.Append("<br/>");
-                }
-                else
-                {
-                    stringBuilder.AppendLine("\t</tr>");
-                }
-
-                writer.Write(stringBuilder.ToString());
             }
 
-            writer.Write("</table>");
+            if (isQuotesOpen)
+            {
+                writer.Write("<br/>");
+            }
+            else
+            {
+                writer.WriteLine($"{doubleTabulation}\t</tr>");
+            }
         }
-        catch (FileNotFoundException)
-        {
-            Console.WriteLine("Файл не найден");
-        }
+
+        writer.WriteLine($"{doubleTabulation}</table>");
+        writer.WriteLine("\t</body>");
+        writer.Write("</html>");
     }
 
     static void Main(string[] args)
     {
-        ConvertingCSV("..\\..\\..\\File\\innerText.txt", "..\\..\\..\\File\\outText.txt");
+        try
+        {
+            ConvertTextToCsv(args[0], args[1]);
+        }
+        catch (IndexOutOfRangeException)
+        {
+            Console.WriteLine("Не найдены пути к файлу для чтения или записи");
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Не найден файл для чтения");
+        }
     }
 }
