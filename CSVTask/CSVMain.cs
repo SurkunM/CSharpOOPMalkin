@@ -1,6 +1,6 @@
 ﻿namespace CsvTask;
 
-internal class CSVMain
+internal class CsvMain
 {
     public static void ConvertTextToCsv(string inputFile, string outputFile)
     {
