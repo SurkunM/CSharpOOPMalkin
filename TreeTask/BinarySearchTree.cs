@@ -271,10 +271,10 @@ internal class BinarySearchTree<T>
 
     public void DepthFirstSearchRecursive(Action<T> action)
     {
-        VisitingDepthFirstSearch(_root, action);
+        VisitingDepthFirstSearchRecursive(_root, action);
     }
 
-    private static void VisitingDepthFirstSearch(TreeNode<T>? node, Action<T> action)
+    private static void VisitingDepthFirstSearchRecursive(TreeNode<T>? node, Action<T> action)
     {
         if (node is null)
         {
@@ -283,8 +283,8 @@ internal class BinarySearchTree<T>
 
         action(node.Data);
 
-        VisitingDepthFirstSearch(node.Left, action);
-        VisitingDepthFirstSearch(node.Right, action);
+        VisitingDepthFirstSearchRecursive(node.Left, action);
+        VisitingDepthFirstSearchRecursive(node.Right, action);
     }
 
     private int GetComparer(T data1, T data2)
