@@ -18,7 +18,8 @@ internal class TreeMain
         Console.WriteLine(binaryTree);
 
         binaryTree.Remove(8);
-        binaryTree.Contains(12);
+        binaryTree.Remove(3);
+        binaryTree.Remove(10);
         Console.WriteLine(binaryTree);
     }
 }
