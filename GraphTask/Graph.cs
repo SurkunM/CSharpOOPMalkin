@@ -2,106 +2,112 @@
 
 internal class Graph
 {
-    private readonly int[,] _items =
-    {
-            {0 ,0 ,0 ,0 ,0 ,0 , 0},
-            {1 ,0 ,1 ,1 ,1 ,1 , 0},
-            {0 ,1 ,0 ,0 ,0 ,0 , 1},
-            {0 ,1 ,0 ,0 ,0 ,0 , 0},
-            {0 ,1 ,0 ,0 ,0 ,1 , 0},
-            {0 ,1 ,0 ,0 ,1 ,0 , 1},
-            {0 ,0 ,1 ,0 ,0 ,1 , 0}
-    };
+    private readonly int[,] _items;
 
-    public Graph() { }
-
-    public void BreadthFirstSearch()
+    public Graph(int[,] items)
     {
+        _items = items;
+    }
+
+    public void BreadthFirstSearch(Action<int> action)
+    {
+        if (_items is null || _items.GetLength(1) == 0)
+        {
+            return;
+        }
+
         Queue<int> queue = new Queue<int>();
-        queue.Enqueue(0);
-
         bool[] visited = new bool[_items.GetLength(0)];
 
-        while (queue.Count > 0)
+        while (Array.IndexOf(visited, false) >= 0)
         {
-            int currentItem = queue.Dequeue();
+            queue.Enqueue(Array.IndexOf(visited, false));
 
-            if (!visited[currentItem])
+            while (queue.Count > 0)
             {
-                Console.WriteLine(currentItem);
-                visited[currentItem] = true;
+                int vertex = queue.Dequeue();
+
+                if (visited[vertex])
+                {
+                    continue;
+                }
+
+                action(vertex);
+                visited[vertex] = true;
 
                 for (int i = 0; i < _items.GetLength(1); i++)
                 {
-                    if (_items[currentItem, i] > 0)
+                    if (_items[vertex, i] != 0 && !visited[i])
                     {
                         queue.Enqueue(i);
                     }
                 }
             }
-
-            if (queue.Count == 0 && Array.IndexOf(visited, false) >= 0)
-            {
-                queue.Enqueue(Array.IndexOf(visited, false));
-            }
         }
     }
 
-    public void DepthFirstSearch()
+    public void DepthFirstSearch(Action<int> action)
     {
-        Stack<int> stack = new Stack<int>();
-        stack.Push(0);
+        if (_items is null || _items.GetLength(1) == 0)
+        {
+            return;
+        }
 
+        Stack<int> stack = new Stack<int>();
         bool[] visited = new bool[_items.GetLength(0)];
 
-        while (stack.Count > 0)
+        while (Array.IndexOf(visited, false) >= 0)
         {
-            int currentItem = stack.Pop();
+            stack.Push(Array.IndexOf(visited, false));
 
-            if (!visited[currentItem])
+            while (stack.Count > 0)
             {
-                Console.WriteLine(currentItem);
-                visited[currentItem] = true;
+                int vertex = stack.Pop();
+
+                if (visited[vertex])
+                {
+                    continue;
+                }
+
+                action(vertex);
+                visited[vertex] = true;
 
                 for (int i = _items.GetLength(1) - 1; i >= 0; i--)
                 {
-                    if (_items[currentItem, i] > 0)
+                    if (_items[vertex, i] != 0 && !visited[i])
                     {
                         stack.Push(i);
                     }
                 }
             }
-
-            if (stack.Count == 0 && Array.IndexOf(visited, false) >= 0)
-            {
-                stack.Push(Array.IndexOf(visited, false));
-            }
         }
     }
 
-    public void RecursionDepthFirstSearch()
+    public void DepthFirstSearchRecursive(Action<int> action)
     {
+        if (_items is null || _items.GetLength(1) == 0)
+        {
+            return;
+        }
+
         bool[] visited = new bool[_items.GetLength(0)];
 
         while (Array.IndexOf(visited, false) >= 0)
         {
-            DepthFirstSearch(Array.IndexOf(visited, false), visited);
+            VisitingDepthFirstSearchRecursive(Array.IndexOf(visited, false), visited, action);
         }
     }
 
-    private void DepthFirstSearch(int vertex, bool[] visited)
+    private void VisitingDepthFirstSearchRecursive(int vertex, bool[] visited, Action<int> action)
     {
-        if (!visited[vertex])
-        {
-            visited[vertex] = true;
-            Console.WriteLine(vertex);
+        visited[vertex] = true;
+        action(vertex);
 
-            for (int i = 0; i < _items.GetLength(1); i++)
+        for (int i = 0; i < _items.GetLength(1); i++)
+        {
+            if (_items[vertex, i] != 0 && !visited[i])
             {
-                if (_items[vertex, i] > 0)
-                {
-                    DepthFirstSearch(i, visited);
-                }
+                VisitingDepthFirstSearchRecursive(i, visited, action);
             }
         }
     }
