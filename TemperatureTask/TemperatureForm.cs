@@ -47,7 +47,7 @@ public partial class TemperatureForm : Form, IModelListener
                 throw new ArgumentNullException(nameof(textBoxSetTemperatureValue));
             }
 
-            Controller!.ConvertTemperature(Convert.ToDouble(textBoxSetTemperatureValue.Text), comboBoxIncomingScale.SelectedItem as IScale, comboBoxOutgoingScale.SelectedItem as IScale);
+            Controller.ConvertTemperature(Convert.ToDouble(textBoxSetTemperatureValue.Text), comboBoxIncomingScale.SelectedItem as IScale, comboBoxOutgoingScale.SelectedItem as IScale);
         }
         catch (FormatException)
         {
