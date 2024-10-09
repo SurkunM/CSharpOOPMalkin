@@ -1,35 +1,69 @@
 using TemperatureTask.Controller;
-using TemperatureTask.Model;
-using TemperatureTask.View;
+using TemperatureTask.Model.Interfaces;
+using TemperatureTask.Model.Scales;
 
 namespace TemperatureTask;
 
-public partial class TemperatureForm : Form
+public partial class TemperatureForm : Form, IModelListener
 {
-    private readonly TemperatureModel model;
-    private readonly TemperatureView view;
-    private readonly TemperatureController controller;
+    public TemperatureController Controller { private get; set; } = default!;
+
+    private readonly IScale[] _scales;
 
     public TemperatureForm()
     {
         InitializeComponent();
 
-        view = new TemperatureView();
-        model = new TemperatureModel();
-        controller = new TemperatureController(model, view);
+        _scales = [new Celsius(), new Fahrenheit(), new Kelvin()];
 
-        view.Controller = controller;
-        view.LabelResult = labelResultValue;
+        comboBoxIncomingScale.Items.AddRange(_scales);
+        comboBoxOutgoingScale.Items.AddRange(_scales);
 
-        comboBoxCurrentScale.SelectedIndexChanged += view.currentScaleComboBox_ScaledIndexChanged;
-        comboBoxNewScale.SelectedIndexChanged += view.newScaleComboBox_SelectedIndexChanged;
-        textBoxTemperatureValue.TextChanged += view.temperatureValueTextBox_TextChanged;
-
-        buttonConvert.Click += view.convertButton_Click;
+        comboBoxIncomingScale.SelectedItem = _scales.First();
+        comboBoxOutgoingScale.SelectedItem = _scales.Last();
     }
 
-    private void FormMain_Load(object sender, EventArgs e)
+    private void ComboBoxIncomingScaleSelectedIndexChanged(object sender, EventArgs e)
     {
+        comboBoxIncomingScale = (ComboBox)sender;
+    }
 
+    private void ComboBoxOutgoingScaleSelectedIndexChanged(object sender, EventArgs e)
+    {
+        comboBoxOutgoingScale = (ComboBox)sender;
+    }
+
+    private void TextBoxSetTemperatureValueTextChanged(object sender, EventArgs e)
+    {
+        textBoxSetTemperatureValue = (TextBox)sender;
+    }
+
+    private void ButtonConvertClick(object sender, EventArgs e)
+    {
+        try
+        {
+            if (textBoxSetTemperatureValue is null)
+            {
+                throw new ArgumentNullException(nameof(textBoxSetTemperatureValue));
+            }
+
+            Controller!.ConvertTemperature(Convert.ToDouble(textBoxSetTemperatureValue.Text), comboBoxIncomingScale.SelectedItem as IScale, comboBoxOutgoingScale.SelectedItem as IScale);
+        }
+        catch (FormatException)
+        {
+            MessageBox.Show("Температура должна быть числом", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    public void SetConversionResult(double temperature)
+    {
+        if (comboBoxOutgoingScale.SelectedItem is Kelvin)
+        {
+            labelResultValue.Text = $"{temperature} {comboBoxOutgoingScale.Text}";
+        }
+        else
+        {
+            labelResultValue.Text = $"{temperature} градусов {comboBoxOutgoingScale.Text}";
+        }
     }
 }

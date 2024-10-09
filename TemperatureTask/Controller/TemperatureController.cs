@@ -1,34 +1,34 @@
 ﻿using TemperatureTask.Model;
-using TemperatureTask.View;
+using TemperatureTask.Model.Scales;
 
 namespace TemperatureTask.Controller;
 
-internal class TemperatureController
+public class TemperatureController
 {
-    private readonly TemperatureModel _model;
+    private readonly TemperatureModel _model;   
 
-    private readonly TemperatureView _view;
-
-    public TemperatureController(TemperatureModel model, TemperatureView view)
+    public TemperatureController( TemperatureModel model)
     {
-        _model = model;
-        _view = view;
+        if (model is null)
+        {
+            throw new ArgumentNullException("model");
+        }
+
+        _model = model;      
     }
 
-    public void ConversionTemperature(double temperature, ComboBox? currentScale, ComboBox? newScale)
+    public void ConvertTemperature(double temperature, IScale? incomingScale, IScale? outgoingScale)
     {
-        if (currentScale is null)
+        if (incomingScale is null)
         {
-            throw new ArgumentNullException(nameof(currentScale));
+            throw new ArgumentNullException(nameof(incomingScale));
         }
 
-        if (newScale is null)
+        if (outgoingScale is null)
         {
-            throw new ArgumentNullException(nameof(newScale));
+            throw new ArgumentNullException(nameof(outgoingScale));
         }
 
-        var newTemperature = _model.ConversionTemperature(temperature, currentScale, newScale);
-
-        _view.SetConversionResult(newTemperature);
+        _model.ConvertTemperature(temperature, incomingScale, outgoingScale);
     }
 }

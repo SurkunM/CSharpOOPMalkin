@@ -1,3 +1,6 @@
+using TemperatureTask.Controller;
+using TemperatureTask.Model;
+
 namespace TemperatureTask
 {
     internal static class TemperatureMain
@@ -11,7 +14,13 @@ namespace TemperatureTask
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new TemperatureForm());
+
+            var view = new TemperatureForm();
+            var model = new TemperatureModel(view);
+            var controller = new TemperatureController(model);  
+            view.Controller = controller;
+
+            Application.Run(view);
         }
     }
 }

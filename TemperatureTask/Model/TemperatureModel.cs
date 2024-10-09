@@ -1,64 +1,25 @@
-﻿namespace TemperatureTask.Model;
+﻿using TemperatureTask.Model.Scales;
+using TemperatureTask.Model.Delegate;
+using TemperatureTask.Model.Interfaces;
 
-internal class TemperatureModel
+namespace TemperatureTask.Model;
+
+public class TemperatureModel : IModel
 {
-    public double ConversionTemperature(double temperature, ComboBox currentScale, ComboBox newScale)
+    public event ResultSetHandler? ResultSet;
+
+    private readonly TemperatureForm _view;
+
+    public TemperatureModel(TemperatureForm view)
     {
-        if (currentScale.SelectedItem is null)
-        {
-            throw new ArgumentNullException(nameof(currentScale));
-        }
-
-        if (newScale.SelectedItem is null)
-        {
-            throw new ArgumentNullException(nameof(newScale));
-        }
-
-        if (currentScale.SelectedItem.Equals(newScale.SelectedItem))
-        {
-            return temperature;
-        }
-
-        if (newScale.SelectedItem.Equals(newScale.Items[0]))
-        {
-            return GetCelsius(temperature, currentScale);
-        }
-
-        if (newScale.SelectedItem.Equals(newScale.Items[1]))
-        {
-            return GetFahrenheit(temperature, currentScale);
-        }
-
-        return GetKelvin(temperature, currentScale);
+        _view = view;
     }
 
-    private static double GetCelsius(double temperature, ComboBox currentScale)
+    public void ConvertTemperature(double temperature, IScale incomingScale, IScale outgoingScale)
     {
-        if (currentScale.SelectedItem!.Equals(currentScale.Items[1]))
-        {
-            return (temperature - 32) / 1.8;
-        }
+        var result = incomingScale.Convert(temperature, outgoingScale);
 
-        return temperature - 273.15;
-    }
-
-    private static double GetFahrenheit(double temperature, ComboBox currentScale)
-    {
-        if (currentScale.SelectedItem!.Equals(currentScale.Items[0]))
-        {
-            return temperature * 1.8 + 32;
-        }
-
-        return (temperature - 273.15) * 1.8 + 32;
-    }
-
-    private static double GetKelvin(double temperature, ComboBox currentScale)
-    {
-        if (currentScale.SelectedItem!.Equals(currentScale.Items[0]))
-        {
-            return temperature + 273.15;
-        }
-
-        return (temperature - 32) / 1.8 + 273.15;
+        ResultSet += _view.SetConversionResult;
+        ResultSet.Invoke(result);        
     }
 }
