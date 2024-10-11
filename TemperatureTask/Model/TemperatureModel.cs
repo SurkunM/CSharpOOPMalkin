@@ -1,12 +1,11 @@
-﻿using TemperatureTask.Model.Scales;
-using TemperatureTask.Model.Delegate;
-using TemperatureTask.Model.Interfaces;
+﻿using TemperatureTask.Model.Interfaces;
+using TemperatureTask.Model.Scales;
 
 namespace TemperatureTask.Model;
 
 public class TemperatureModel : IModel
 {
-    public event ResultSetHandler? ResultSet;
+    public event Action<double>? ResultSet;
 
     private readonly TemperatureForm _view;
 
@@ -20,6 +19,6 @@ public class TemperatureModel : IModel
         var result = incomingScale.Convert(temperature, outgoingScale);
 
         ResultSet += _view.SetConversionResult;
-        ResultSet.Invoke(result);        
+        ResultSet.Invoke(result);
     }
 }
