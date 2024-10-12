@@ -13,10 +13,10 @@ internal class VectorMain
         Console.WriteLine("Вектор 1: {0}", vector1);
         Console.WriteLine("Вектор 2: {0}", vector2);
 
-        vector1.CalculateSum(vector2);
+        vector1.Add(vector2);
         Console.WriteLine("Сумма векторов = {0}", vector1);
 
-        vector1.CalculateDifference(vector2);
+        vector1.Subtract(vector2);
         Console.WriteLine("Разность векторов = {0}", vector1);
 
         vector1.MultiplyByScalar(2);

@@ -14,7 +14,7 @@ public class Vector
         {
             if (index < 0 || index >= _components.Length)
             {
-                throw new IndexOutOfRangeException($"Значение \"{nameof(index)}\" находится за пределами границ коллекции от 0 до {_components.Length - 1}");
+                throw new IndexOutOfRangeException($"Индекс \"{index}\" находится за пределами границ вектора от 0 до {_components.Length - 1}");
             }
 
             return _components[index];
@@ -24,7 +24,7 @@ public class Vector
         {
             if (index < 0 || index >= _components.Length)
             {
-                throw new IndexOutOfRangeException($"Значение \"{nameof(index)}\" находится за пределами границ коллекции от 0 до {_components.Length - 1}");
+                throw new IndexOutOfRangeException($"Индекс \"{index}\" находится за пределами границ вектора от 0 до {_components.Length - 1}");
             }
 
             _components[index] = value;
@@ -35,7 +35,7 @@ public class Vector
     {
         if (dimension <= 0)
         {
-            throw new ArgumentException($"Значение размерности \"{nameof(dimension)}\" не может быть меньше или равной нулю.", nameof(dimension));
+            throw new ArgumentException($"Размерность вектора не может быть равна \"{dimension}\", данное значение должно быть больше нуля.", nameof(dimension));
         }
 
         _components = new double[dimension];
@@ -62,7 +62,7 @@ public class Vector
 
         if (components.Length == 0)
         {
-            throw new ArgumentException($"Значение \"{nameof(components.Length)}\" не может быть меньше или равной нулю.", nameof(components));
+            throw new ArgumentException($"Количество входящих компонентов не может быть равно \"{components.Length}\", данное значение должно быть больше нуля.", nameof(components));
         }
 
         _components = new double[components.Length];
@@ -74,7 +74,12 @@ public class Vector
     {
         if (dimension <= 0)
         {
-            throw new ArgumentException($"Значение размерности \"{nameof(dimension)}\" не может быть меньше или равной нулю.", nameof(dimension));
+            throw new ArgumentException($"Размерность вектора не может быть равна \"{dimension}\", данное значение должно быть больше нуля.", nameof(dimension));
+        }
+
+        if (dimension < components.Length)
+        {
+            throw new ArgumentException($"Размерность нового вектора не может быть равна \"{dimension}\", данное значение должно быть больше или равно \"{components.Length}\".", nameof(dimension));
         }
 
         if (components is null)
@@ -92,7 +97,7 @@ public class Vector
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.Append('{');
-        string separator = ", ";
+        const string separator = ", ";
 
         foreach (double component in _components)
         {
@@ -148,7 +153,7 @@ public class Vector
         return true;
     }
 
-    public void CalculateSum(Vector vector)
+    public void Add(Vector vector)
     {
         if (vector is null)
         {
@@ -166,7 +171,7 @@ public class Vector
         }
     }
 
-    public void CalculateDifference(Vector vector)
+    public void Subtract(Vector vector)
     {
         if (vector is null)
         {
@@ -223,7 +228,7 @@ public class Vector
 
         Vector resultVector = new Vector(vector1);
 
-        resultVector.CalculateSum(vector2);
+        resultVector.Add(vector2);
 
         return resultVector;
     }
@@ -242,7 +247,7 @@ public class Vector
 
         Vector resultVector = new Vector(vector1);
 
-        resultVector.CalculateDifference(vector2);
+        resultVector.Subtract(vector2);
 
         return resultVector;
     }
