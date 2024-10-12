@@ -67,7 +67,7 @@ internal class Triangle : IShape
 
     public override int GetHashCode()
     {
-        int prime = 37;
+        const int prime = 37;
         int hash = 1;
 
         hash = prime * hash + X1.GetHashCode();
