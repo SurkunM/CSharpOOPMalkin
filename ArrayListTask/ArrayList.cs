@@ -52,7 +52,7 @@ internal class ArrayList<T> : IList<T>
         {
             if (value < Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), $"Входящее значение вместимости списка \"{value}\"  не может быть меньше текущего размера списка \"{Count}\".");
+                throw new ArgumentOutOfRangeException(nameof(value), $"Входящее значение вместимости списка \"{value}\" не может быть меньше текущего размера списка \"{Count}\".");
             }
 
             Array.Resize(ref _items, value);
@@ -135,7 +135,7 @@ internal class ArrayList<T> : IList<T>
 
         if (array.Length - index < Count)
         {
-            throw new ArgumentException($"Недостаточно места в переданном массиве от текущего положения \"{index}\" до конца длины массива \"{array.Length}\".", nameof(array));
+            throw new ArgumentException($"Недостаточно места в переданном массиве от текущего индекса \"{index}\" до конца длины массива.", nameof(array));
         }
 
         Array.Copy(_items, 0, array, index, Count);
@@ -160,7 +160,7 @@ internal class ArrayList<T> : IList<T>
 
         if (index < 0 || index > Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
         }
 
         if (Count >= Capacity)
@@ -199,7 +199,7 @@ internal class ArrayList<T> : IList<T>
 
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
         }
 
         Array.Copy(_items, index + 1, _items, index, Count - index - 1);
@@ -220,21 +220,16 @@ internal class ArrayList<T> : IList<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        if (_items is null)
-        {
-            throw new ArgumentNullException(nameof(_items));
-        }
-
         int initialModCount = _modCount;
 
         for (int i = 0; i < Count; i++)
         {
             if (initialModCount != _modCount)
             {
-                throw new InvalidOperationException($"Произошло изменение в элементах текущего списка \"{nameof(_items)}\" за время обхода итератора");
+                throw new InvalidOperationException($"Произошло изменение в элементах текущего списка за время обхода итератора.");
             }
 
-            yield return _items[i];
+            yield return this[i];
         }
     }
 
@@ -245,9 +240,9 @@ internal class ArrayList<T> : IList<T>
 
     public override string ToString()
     {
-        if (_items is null)
+        if (Count == 0)
         {
-            throw new ArgumentNullException(nameof(_items));
+            return "[]";
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -257,14 +252,10 @@ internal class ArrayList<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            stringBuilder.Append(_items[i]).Append(separator);
+            stringBuilder.Append(this[i]).Append(separator);
         }
 
-        if (Count > 0)
-        {
-            stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
-        }
-
+        stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
         stringBuilder.Append(']');
 
         return stringBuilder.ToString();
@@ -291,7 +282,7 @@ internal class ArrayList<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            if (!Equals(_items![i], list[i]))
+            if (!Equals(this[i], list[i]))
             {
                 return false;
             }
@@ -302,19 +293,14 @@ internal class ArrayList<T> : IList<T>
 
     public override int GetHashCode()
     {
-        if (_items is null)
-        {
-            throw new ArgumentNullException(nameof(_items));
-        }
-
         const int prime = 37;
         int hash = 1;
 
         for (int i = 0; i < Count; i++)
         {
-            if (_items[i] is not null)
+            if (this[i] is not null)
             {
-                hash = prime * hash + _items[i]!.GetHashCode();
+                hash = prime * hash + this[i]!.GetHashCode();
             }
         }
 
