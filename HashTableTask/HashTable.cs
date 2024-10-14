@@ -17,7 +17,7 @@ internal class HashTable<T> : ICollection<T>
     {
         if (capacity <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(capacity), "Вместимость хэш-таблицы не должна быть меньше или равно нулю");
+            throw new ArgumentOutOfRangeException(nameof(capacity), $"Вместимость хэш-таблицы \"{capacity}\" не может быть меньше или равно нулю.");
         }
 
         _lists = new List<T>[capacity];
@@ -47,7 +47,7 @@ internal class HashTable<T> : ICollection<T>
 
     public void Clear()
     {
-        if (Count <= 0)
+        if (Count == 0)
         {
             return;
         }
@@ -77,12 +77,12 @@ internal class HashTable<T> : ICollection<T>
 
         if (arrayIndex < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Значение параметра {nameof(arrayIndex)} меньше нуля");
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex), $"Индекс \"{arrayIndex}\" не может быть меньше нуля.");
         }
 
         if (array.Length - arrayIndex < Count)
         {
-            throw new ArgumentException($"Недостаточно места в переданном массиве от текущего положения {nameof(arrayIndex)} до конца длины массива {nameof(array)}", nameof(array));
+            throw new ArgumentException($"Недостаточно места в переданном массиве от индекса \"{arrayIndex}\" до конца длины массива .", nameof(array));
         }
 
         int i = arrayIndex;
@@ -99,7 +99,7 @@ internal class HashTable<T> : ICollection<T>
 
     public bool Remove(T item)
     {
-        if (Count <= 0)
+        if (Count == 0)
         {
             return false;
         }
@@ -119,7 +119,7 @@ internal class HashTable<T> : ICollection<T>
 
     public override string ToString()
     {
-        if (Count <= 0)
+        if (Count == 0)
         {
             return "()";
         }
@@ -127,20 +127,14 @@ internal class HashTable<T> : ICollection<T>
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.Append('(');
-        const string Separator = ", ";
+        const string separator = ", ";
 
-        foreach (List<T> list in _lists)
+        foreach (T item in this)
         {
-            if (list is not null)
-            {
-                foreach (T item in list)
-                {
-                    stringBuilder.Append(item).Append(Separator);
-                }
-            }
+            stringBuilder.Append(item).Append(separator);
         }
 
-        stringBuilder.Remove(stringBuilder.Length - Separator.Length, Separator.Length);
+        stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
         stringBuilder.Append(')');
 
         return stringBuilder.ToString();
@@ -148,7 +142,7 @@ internal class HashTable<T> : ICollection<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        int startModCount = _modCount;
+        int initialModCount = _modCount;
 
         foreach (List<T> list in _lists)
         {
@@ -159,9 +153,9 @@ internal class HashTable<T> : ICollection<T>
 
             foreach (T item in list)
             {
-                if (startModCount != _modCount)
+                if (initialModCount != _modCount)
                 {
-                    throw new InvalidOperationException("Произошло изменение в элементах коллекции за время обхода");
+                    throw new InvalidOperationException("Произошло изменение в элементах текущей коллекции за время обхода");
                 }
 
                 yield return item;
@@ -171,6 +165,6 @@ internal class HashTable<T> : ICollection<T>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)this).GetEnumerator();
+        return GetEnumerator();
     }
 }
