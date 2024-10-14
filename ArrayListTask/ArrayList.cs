@@ -1,10 +1,11 @@
 ﻿using System.Collections;
+using System.Text;
 
 namespace ArrayListTask;
 
 internal class ArrayList<T> : IList<T>
 {
-    private T[] _items = [];
+    private T[]? _items;
 
     private int _modCount;
 
@@ -16,20 +17,20 @@ internal class ArrayList<T> : IList<T>
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
             }
 
-            return _items[index];
+            return _items![index];
         }
 
         set
         {
             if (index < 0 || index >= Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
             }
 
-            _items[index] = value;
+            _items![index] = value;
 
             _modCount++;
         }
@@ -37,13 +38,21 @@ internal class ArrayList<T> : IList<T>
 
     public int Capacity
     {
-        get => _items.Length;
+        get
+        {
+            if (_items is null)
+            {
+                return 0;
+            }
+
+            return _items.Length;
+        }
 
         set
         {
             if (value < Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), $"Входящее значение: {value} не может быть меньше текущего размера списка: {Count}");
+                throw new ArgumentOutOfRangeException(nameof(value), $"Входящее значение вместимости списка \"{value}\"  не может быть меньше текущего размера списка \"{Count}\".");
             }
 
             Array.Resize(ref _items, value);
@@ -58,7 +67,7 @@ internal class ArrayList<T> : IList<T>
     {
         if (capacity < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(capacity), "Вместимость списка не может быть меньше нуля");
+            throw new ArgumentOutOfRangeException(nameof(capacity), $"Значение вместимости списка \"{capacity}\" не может быть меньше нуля.");
         }
 
         _items = new T[capacity];
@@ -66,12 +75,12 @@ internal class ArrayList<T> : IList<T>
 
     public void Add(T item)
     {
-        if (Count >= _items.Length)
+        if (Count >= Capacity)
         {
             IncreaseCapacity();
         }
 
-        _items[Count] = item;
+        _items![Count] = item;
 
         Count++;
         _modCount++;
@@ -79,25 +88,27 @@ internal class ArrayList<T> : IList<T>
 
     private void IncreaseCapacity()
     {
-        if (_items.Length == 0)
+        if (Capacity == 0)
         {
             _items = new T[1];
         }
         else
         {
-            Array.Resize(ref _items, _items.Length * 2);
+            Array.Resize(ref _items, Capacity * 2);
         }
     }
 
     public void Clear()
     {
-        if (Count > 0)
+        if (Count == 0)
         {
-            Array.Clear(_items, 0, Count);
-
-            Count = 0;
-            _modCount++;
+            return;
         }
+
+        Array.Clear(_items!, 0, Count);
+
+        _modCount++;
+        Count = 0;
     }
 
     public bool Contains(T item)
@@ -112,14 +123,19 @@ internal class ArrayList<T> : IList<T>
             throw new ArgumentNullException(nameof(array));
         }
 
+        if (_items is null)
+        {
+            throw new ArgumentNullException(nameof(_items));
+        }
+
         if (index < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Значение параметра {nameof(index)} меньше нуля");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" не может быть меньше нуля.");
         }
 
         if (array.Length - index < Count)
         {
-            throw new ArgumentException($"Недостаточно места в переданном массиве от текущего положения {nameof(index)} до конца длины массива {nameof(array)} ", nameof(array));
+            throw new ArgumentException($"Недостаточно места в переданном массиве от текущего положения \"{index}\" до конца длины массива \"{array.Length}\".", nameof(array));
         }
 
         Array.Copy(_items, 0, array, index, Count);
@@ -127,17 +143,27 @@ internal class ArrayList<T> : IList<T>
 
     public int IndexOf(T item)
     {
+        if (_items is null)
+        {
+            throw new ArgumentNullException(nameof(_items));
+        }
+
         return Array.IndexOf(_items, item, 0, Count);
     }
 
     public void Insert(int index, T item)
     {
-        if (index < 0 || index > Count)
+        if (_items is null)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
+            throw new ArgumentNullException(nameof(_items));
         }
 
-        if (Count >= _items.Length)
+        if (index < 0 || index > Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}");
+        }
+
+        if (Count >= Capacity)
         {
             IncreaseCapacity();
         }
@@ -166,9 +192,14 @@ internal class ArrayList<T> : IList<T>
 
     public void RemoveAt(int index)
     {
+        if (_items is null)
+        {
+            throw new ArgumentNullException(nameof(_items));
+        }
+
         if (index < 0 || index >= Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс находится за пределами границ списка от 0 до {Count}");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}");
         }
 
         Array.Copy(_items, index + 1, _items, index, Count - index - 1);
@@ -181,7 +212,7 @@ internal class ArrayList<T> : IList<T>
 
     public void TrimExcess()
     {
-        if (Count < _items.Length * 0.9)
+        if (Count < Capacity * 0.9)
         {
             Capacity = Count;
         }
@@ -189,13 +220,18 @@ internal class ArrayList<T> : IList<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        int startModCount = _modCount;
+        if (_items is null)
+        {
+            throw new ArgumentNullException(nameof(_items));
+        }
+
+        int initialModCount = _modCount;
 
         for (int i = 0; i < Count; i++)
         {
-            if (startModCount != _modCount)
+            if (initialModCount != _modCount)
             {
-                throw new InvalidOperationException("Произошло изменение в элементах коллекции за время обхода");
+                throw new InvalidOperationException($"Произошло изменение в элементах текущего списка \"{nameof(_items)}\" за время обхода итератора");
             }
 
             yield return _items[i];
@@ -204,12 +240,34 @@ internal class ArrayList<T> : IList<T>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)this).GetEnumerator();
+        return GetEnumerator();
     }
 
     public override string ToString()
     {
-        return $"[{string.Join(", ", _items)}]";
+        if (_items is null)
+        {
+            throw new ArgumentNullException(nameof(_items));
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.Append('[');
+        const string separator = ", ";
+
+        for (int i = 0; i < Count; i++)
+        {
+            stringBuilder.Append(_items[i]).Append(separator);
+        }
+
+        if (Count > 0)
+        {
+            stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
+        }
+
+        stringBuilder.Append(']');
+
+        return stringBuilder.ToString();
     }
 
     public override bool Equals(object? obj)
@@ -233,19 +291,9 @@ internal class ArrayList<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            if (_items[i] is null)
+            if (!Equals(_items![i], list[i]))
             {
-                if (!Equals(_items[i], list[i]))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!Equals(_items[i], list[i]))
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
@@ -254,14 +302,19 @@ internal class ArrayList<T> : IList<T>
 
     public override int GetHashCode()
     {
-        const int Prime = 37;
+        if (_items is null)
+        {
+            throw new ArgumentNullException(nameof(_items));
+        }
+
+        const int prime = 37;
         int hash = 1;
 
-        foreach (T item in _items)
+        for (int i = 0; i < Count; i++)
         {
-            if (item is not null)
+            if (_items[i] is not null)
             {
-                hash = Prime * hash + item.GetHashCode();
+                hash = prime * hash + _items[i]!.GetHashCode();
             }
         }
 
