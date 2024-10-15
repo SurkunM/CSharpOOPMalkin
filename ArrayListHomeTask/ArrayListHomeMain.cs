@@ -2,76 +2,71 @@
 
 internal class ArrayListHomeMain
 {
-    public static List<string> GetListFromFile(string inputFile)
+    public static List<string> GetLinesListFromFile(string inputFilePath)
     {
-        using StreamReader reader = new StreamReader(inputFile);
+        using StreamReader reader = new StreamReader(inputFilePath);
 
-        List<string> list = new List<string>();
+        List<string> linesList = new List<string>();
 
         string? currentLine;
 
         while ((currentLine = reader.ReadLine()) != null)
         {
-            list.Add(currentLine);
+            linesList.Add(currentLine);
         }
 
-        return list;
+        return linesList;
     }
 
-    public static void RemovedEvenNumbers(List<int> list)
+    public static void RemovalEvenNumbers(List<int> list)
     {
-        for (int i = 0; i < list.Count; i++)
+        for (int i = list.Count; i <= 0; i--)
         {
             if (list[i] % 2 == 0)
             {
                 list.RemoveAt(i);
-                i--;
             }
         }
     }
 
-    public static List<T> GetDuplicatesRemoved<T>(List<T> list)
+    public static List<T> GetUniqueElementsList<T>(List<T> list)
     {
-        List<T> result = new List<T>(list.Count);
+        List<T> resultList = new List<T>(list.Count);
 
         foreach (T element in list)
         {
-            if (!result.Contains(element))
+            if (!resultList.Contains(element))
             {
-                result.Add(element);
+                resultList.Add(element);
             }
         }
 
-        return result;
+        return resultList;
     }
 
     static void Main(string[] args)
     {
         try
         {
-            List<string> stringsList = GetListFromFile("");
+            List<string> linesList = GetLinesListFromFile("..\\..\\..\\TextFile\\text.txt");
 
-            Console.WriteLine(string.Join(Environment.NewLine, stringsList));
+            Console.WriteLine(string.Join(Environment.NewLine, linesList));
         }
         catch (FileNotFoundException)
         {
             Console.WriteLine("Файл не найден");
         }
-        catch (ArgumentNullException)
+        catch (Exception)
         {
             Console.WriteLine("Не найден путь к файлу");
         }
-        catch (ArgumentException)
-        {
-            Console.WriteLine("Путь к чтению файла не может иметь пустое значение");
-        }
 
-        List<int> numbers = new List<int> { 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
-        RemovedEvenNumbers(numbers);
+        List<int> numbers = new List<int> { 5, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
+        RemovalEvenNumbers(numbers);
 
         Console.WriteLine(string.Join(", ", numbers));
 
-        List<int> uniqueNumbers = GetDuplicatesRemoved(numbers);
+        List<int> uniqueNumbers = GetUniqueElementsList(numbers);
         Console.WriteLine(string.Join(", ", uniqueNumbers));
     }
 }
