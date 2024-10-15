@@ -4,10 +4,10 @@ internal class VectorMain
 {
     static void Main(string[] args)
     {
-        double[] array1 = { 3, -3, 2, 0 };
+        double[] array1 = { 3, -3, 2, 10 };
         double[] array2 = { 3, 3, 1 };
 
-        Vector vector1 = new Vector(4, array1);
+        Vector vector1 = new Vector(2, array1);
         Vector vector2 = new Vector(array2);
 
         Console.WriteLine("Вектор 1: {0}", vector1);

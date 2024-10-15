@@ -72,24 +72,19 @@ public class Vector
 
     public Vector(int dimension, double[] components)
     {
-        if (dimension <= 0)
-        {
-            throw new ArgumentException($"Размерность вектора не может быть равна \"{dimension}\", данное значение должно быть больше нуля.", nameof(dimension));
-        }
-
-        if (dimension < components.Length)
-        {
-            throw new ArgumentException($"Размерность нового вектора не может быть равна \"{dimension}\", данное значение должно быть больше или равно \"{components.Length}\".", nameof(dimension));
-        }
-
         if (components is null)
         {
             throw new ArgumentNullException(nameof(components));
         }
 
+        if (dimension <= 0)
+        {
+            throw new ArgumentException($"Размерность вектора не может быть равна \"{dimension}\", данное значение должно быть больше нуля.", nameof(dimension));
+        }
+
         _components = new double[dimension];
 
-        Array.Copy(components, 0, _components, 0, components.Length);
+        Array.Copy(components, 0, _components, 0, Math.Min(dimension, components.Length));
     }
 
     public override string? ToString()
