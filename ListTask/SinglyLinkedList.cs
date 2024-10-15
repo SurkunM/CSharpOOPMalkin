@@ -12,27 +12,24 @@ internal class SinglyLinkedList<T>
     {
         get
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Параметр {nameof(index)} находится за пределами границ списка от 0 до {Count}");
-            }
-
-            if (index == 0)
-            {
-                return GetFirstData();
-            }
+            CheckIndex(index);
 
             return GetListItem(index).Data;
         }
 
         set
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Параметр {nameof(index)} находится за пределами границ списка от 0 до {Count}");
-            }
+            CheckIndex(index);
 
-            GetListItem(index).Data = value!;
+            GetListItem(index).Data = value;
+        }
+    }
+
+    private void CheckIndex(int index)
+    {
+        if (index < 0 || index >= Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
         }
     }
 
@@ -40,7 +37,7 @@ internal class SinglyLinkedList<T>
     {
         if (_head is null)
         {
-            throw new InvalidOperationException($"Данный список пуст и значение {nameof(_head)} ничего не содержит.");
+            throw new InvalidOperationException("Данный список пуст.");
         }
 
         return _head.Data;
@@ -48,47 +45,35 @@ internal class SinglyLinkedList<T>
 
     public T? RemoveAt(int index)
     {
-        if (index < 0 || index >= Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Параметр {nameof(index)} находится за пределами границ списка от 0 до {Count}");
-        }
+        CheckIndex(index);
 
         if (index == 0)
         {
             return RemoveFirst();
         }
 
-        int i = 1;
-        T? currentData = default;
+        ListItem<T> previousItem = GetListItem(index - 1);
+        ListItem<T> currentItem = previousItem.Next!;
 
-        for (ListItem<T> currentItem = _head!.Next!, previousItem = _head;
-            currentItem != null;
-            previousItem = currentItem, currentItem = currentItem.Next!, i++)
-        {
-            if (index == i)
-            {
-                currentData = currentItem.Data;
-                previousItem.Next = currentItem.Next!;
+        T currentData = currentItem.Data;
+        previousItem.Next = currentItem.Next;
 
-                Count--;
-                break;
-            }
-        }
+        Count--;
 
         return currentData;
     }
 
     public void AddFirst(T item)
     {
-        _head = new ListItem<T>(item, _head!);
+        _head = new ListItem<T>(item, _head);
         Count++;
     }
 
     private ListItem<T> GetListItem(int index)
     {
-        ListItem<T> currentItem = _head!;
+        ListItem<T>? currentItem = _head;
 
-        for (int i = 0; currentItem != null; currentItem = currentItem.Next!, i++)
+        for (int i = 0; currentItem != null; currentItem = currentItem.Next, i++)
         {
             if (index == i)
             {
@@ -101,41 +86,29 @@ internal class SinglyLinkedList<T>
 
     public void Add(T item, int index)
     {
-        if (index < 0 || index > Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Параметр {nameof(index)} находится за пределами границ списка от 0 до {Count - 1}");
-        }
+        CheckIndex(index);
 
         if (index == 0)
         {
             AddFirst(item);
+
+            return;
         }
-        else
-        {
-            int i = 1;
 
-            for (ListItem<T> currentItem = _head!.Next!, previousItem = _head!;
-                currentItem != null;
-                previousItem = currentItem, currentItem = currentItem.Next!, i++)
-            {
-                if (index == i)
-                {
-                    currentItem = new ListItem<T>(item, currentItem);
-                    previousItem.Next = currentItem;
+        ListItem<T> previousItem = GetListItem(index - 1);
+        ListItem<T> currentItem = previousItem.Next!;
 
-                    Count++;
+        currentItem = new ListItem<T>(item, currentItem);
+        previousItem.Next = currentItem;
 
-                    return;
-                }
-            }
-        }
+        Count++;
     }
 
-    public bool Remove(T item)
+    public bool Remove(T? item)
     {
-        for (ListItem<T> currentItem = _head!, previousItem = null!;
+        for (ListItem<T>? currentItem = _head, previousItem = null;
             currentItem != null;
-            previousItem = currentItem, currentItem = currentItem.Next!)
+            previousItem = currentItem, currentItem = currentItem.Next)
         {
             if (Equals(currentItem.Data, item))
             {
@@ -161,15 +134,15 @@ internal class SinglyLinkedList<T>
     {
         if (_head is null)
         {
-            throw new InvalidOperationException($"Данный список пуст и значение {nameof(_head)} ничего не содержит.");
+            throw new InvalidOperationException($"Данный список пуст.");
         }
 
-        T oldItem = _head.Data;
+        T removedData = _head.Data;
         _head = _head.Next;
 
         Count--;
 
-        return oldItem;
+        return removedData;
     }
 
     public void Reverse()
@@ -182,7 +155,7 @@ internal class SinglyLinkedList<T>
         ListItem<T>? previousItem = null;
         ListItem<T> currentItem = _head;
 
-        for (ListItem<T> nextItem = currentItem.Next!; nextItem != null; nextItem = currentItem.Next!)
+        for (ListItem<T>? nextItem = currentItem.Next; nextItem != null; nextItem = currentItem.Next)
         {
             currentItem.Next = previousItem;
             previousItem = currentItem;
@@ -191,25 +164,22 @@ internal class SinglyLinkedList<T>
 
         currentItem.Next = previousItem;
         _head = currentItem;
-
-        return;
     }
 
     public SinglyLinkedList<T> Copy()
     {
+        SinglyLinkedList<T> resultSinglyLinkedList = new SinglyLinkedList<T>();
+
         if (_head is null)
         {
-            throw new InvalidOperationException($"Данный список пуст и значение {nameof(_head)} ничего не содержит.");
+            return resultSinglyLinkedList;
         }
 
-        SinglyLinkedList<T> resultSinglyLinkedList = new SinglyLinkedList<T>();
         resultSinglyLinkedList.AddFirst(_head.Data);
 
-        ListItem<T> resultListHead = resultSinglyLinkedList.GetListItem(0);
-
-        for (ListItem<T> currentItem = _head.Next!, resultListItem, previousResultListItem = resultListHead;
+        for (ListItem<T>? currentItem = _head.Next, resultListItem, previousResultListItem = resultSinglyLinkedList._head;
             currentItem != null;
-            currentItem = currentItem.Next!, previousResultListItem.Next = resultListItem, previousResultListItem = resultListItem)
+            currentItem = currentItem.Next, previousResultListItem!.Next = resultListItem, previousResultListItem = resultListItem)
         {
             resultListItem = new ListItem<T>(currentItem.Data);
         }
@@ -229,7 +199,7 @@ internal class SinglyLinkedList<T>
         stringBuilder.Append('[');
         const string separator = ", ";
 
-        for (ListItem<T> currentItem = _head; currentItem != null; currentItem = currentItem.Next!)
+        for (ListItem<T>? currentItem = _head; currentItem != null; currentItem = currentItem.Next)
         {
             stringBuilder.Append(currentItem.Data).Append(separator);
         }
