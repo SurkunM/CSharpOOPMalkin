@@ -86,7 +86,10 @@ internal class SinglyLinkedList<T>
 
     public void Add(T item, int index)
     {
-        CheckIndex(index);
+        if (index < 0 || index > Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
+        }
 
         if (index == 0)
         {
