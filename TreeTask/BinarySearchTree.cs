@@ -15,7 +15,7 @@ internal class BinarySearchTree<T>
         _comparer = Comparer<T>.Default;
     }
 
-    public BinarySearchTree(IComparer<T>? comparer)
+    public BinarySearchTree(IComparer<T> comparer)
     {
         if (comparer is null)
         {
@@ -39,7 +39,7 @@ internal class BinarySearchTree<T>
 
         while (true)
         {
-            if (GetComparer(currentNode.Data, data) > 0)
+            if (_comparer!.Compare(currentNode.Data, data) > 0)
             {
                 if (currentNode.Left is not null)
                 {
@@ -78,11 +78,11 @@ internal class BinarySearchTree<T>
         }
 
         TreeNode<T> currentNode = _root;
-        int comparerResult = GetComparer(currentNode.Data, data);
+        int comparisonResult = _comparer!.Compare(currentNode.Data, data);
 
-        while (comparerResult != 0)
+        while (comparisonResult != 0)
         {
-            if (comparerResult > 0)
+            if (comparisonResult > 0)
             {
                 if (currentNode.Left is not null)
                 {
@@ -105,24 +105,24 @@ internal class BinarySearchTree<T>
                 }
             }
 
-            comparerResult = GetComparer(currentNode.Data, data);
+            comparisonResult = _comparer.Compare(currentNode.Data, data);
         }
 
         return true;
     }
 
-    public void Remove(T data)
+    public bool Remove(T data)
     {
         if (_root is null)
         {
-            return;
+            return false;
         }
 
         TreeNode<T> currentNode = _root;
         TreeNode<T>? parentNode = null;
 
         bool isLeftNode = false;
-        int comparerResult = GetComparer(currentNode.Data, data);
+        int comparerResult = _comparer!.Compare(currentNode.Data, data);
 
         while (comparerResult != 0)
         {
@@ -137,10 +137,10 @@ internal class BinarySearchTree<T>
                 }
                 else
                 {
-                    return;
+                    return false;
                 }
             }
-            else if (comparerResult < 0)
+            else
             {
                 if (currentNode.Right is not null)
                 {
@@ -149,11 +149,11 @@ internal class BinarySearchTree<T>
                 }
                 else
                 {
-                    return;
+                    return false;
                 }
             }
 
-            comparerResult = GetComparer(currentNode.Data, data);
+            comparerResult = _comparer.Compare(currentNode.Data, data);
         }
 
         if (currentNode.Left is null && currentNode.Right is null)
@@ -194,6 +194,8 @@ internal class BinarySearchTree<T>
         }
 
         Count--;
+
+        return true;
     }
 
     private void InsertNode(TreeNode<T>? parentNode, TreeNode<T>? currentNode, bool isLeftNode)
@@ -271,10 +273,10 @@ internal class BinarySearchTree<T>
 
     public void DepthFirstSearchRecursive(Action<T> action)
     {
-        VisitingDepthFirstSearchRecursive(_root, action);
+        DepthFirstSearchRecursiveVisit(_root, action);
     }
 
-    private static void VisitingDepthFirstSearchRecursive(TreeNode<T>? node, Action<T> action)
+    private static void DepthFirstSearchRecursiveVisit(TreeNode<T>? node, Action<T> action)
     {
         if (node is null)
         {
@@ -283,33 +285,8 @@ internal class BinarySearchTree<T>
 
         action(node.Data);
 
-        VisitingDepthFirstSearchRecursive(node.Left, action);
-        VisitingDepthFirstSearchRecursive(node.Right, action);
-    }
-
-    private int GetComparer(T data1, T data2)
-    {
-        if (_comparer != Comparer<T>.Default)
-        {
-            return _comparer!.Compare(data1, data2);
-        }
-
-        if (data1 is null && data2 is null)
-        {
-            return 0;
-        }
-
-        if (data1 is null)
-        {
-            return -1;
-        }
-
-        if (data2 is null)
-        {
-            return 1;
-        }
-
-        return _comparer.Compare(data1, data2);
+        DepthFirstSearchRecursiveVisit(node.Left, action);
+        DepthFirstSearchRecursiveVisit(node.Right, action);
     }
 
     public override string ToString()
