@@ -17,9 +17,12 @@ internal class GraphMain
 
         Graph graph = new Graph(matrix);
 
-        graph.BreadthFirstSearch(x => Console.WriteLine(x));
+        graph.BreadthFirstSearch(Console.Write);
+        Console.WriteLine();
 
-        graph.DepthFirstSearch(x => Console.WriteLine(x));
-        graph.DepthFirstSearchRecursive(x => Console.WriteLine(x));
+        graph.DepthFirstSearch(Console.Write);
+        Console.WriteLine();
+
+        graph.DepthFirstSearchRecursive(Console.Write);
     }
 }

@@ -6,12 +6,30 @@ internal class Graph
 
     public Graph(int[,] items)
     {
-        _items = items;
+        if (items is null)
+        {
+            throw new ArgumentNullException(nameof(items));
+        }
+
+        if (items.GetLength(0) != items.GetLength(1))
+        {
+            throw new ArgumentException("Матрица смежности должна быть квадратной.", nameof(items));
+        }
+
+        _items = new int[items.GetLength(0), items.GetLength(0)];
+
+        for (int i = 0; i < items.GetLength(0); i++)
+        {
+            for (int j = 0; j < items.GetLength(0); j++)
+            {
+                _items[i, j] = items[i, j];
+            }
+        }
     }
 
     public void BreadthFirstSearch(Action<int> action)
     {
-        if (_items is null || _items.GetLength(1) == 0)
+        if (_items.GetLength(0) == 0)
         {
             return;
         }
@@ -19,9 +37,14 @@ internal class Graph
         Queue<int> queue = new Queue<int>();
         bool[] visited = new bool[_items.GetLength(0)];
 
-        while (Array.IndexOf(visited, false) >= 0)
+        for (int i = 0; i < visited.Length; i++)
         {
-            queue.Enqueue(Array.IndexOf(visited, false));
+            if (visited[i])
+            {
+                continue;
+            }
+
+            queue.Enqueue(i);
 
             while (queue.Count > 0)
             {
@@ -35,11 +58,11 @@ internal class Graph
                 action(vertex);
                 visited[vertex] = true;
 
-                for (int i = 0; i < _items.GetLength(1); i++)
+                for (int j = 0; j < _items.GetLength(1); j++)
                 {
-                    if (_items[vertex, i] != 0 && !visited[i])
+                    if (_items[vertex, j] != 0 && !visited[j])
                     {
-                        queue.Enqueue(i);
+                        queue.Enqueue(j);
                     }
                 }
             }
@@ -48,7 +71,7 @@ internal class Graph
 
     public void DepthFirstSearch(Action<int> action)
     {
-        if (_items is null || _items.GetLength(1) == 0)
+        if (_items.GetLength(0) == 0)
         {
             return;
         }
@@ -56,9 +79,14 @@ internal class Graph
         Stack<int> stack = new Stack<int>();
         bool[] visited = new bool[_items.GetLength(0)];
 
-        while (Array.IndexOf(visited, false) >= 0)
+        for (int i = 0; i < visited.Length; i++)
         {
-            stack.Push(Array.IndexOf(visited, false));
+            if (visited[i])
+            {
+                continue;
+            }
+
+            stack.Push(i);
 
             while (stack.Count > 0)
             {
@@ -72,11 +100,11 @@ internal class Graph
                 action(vertex);
                 visited[vertex] = true;
 
-                for (int i = _items.GetLength(1) - 1; i >= 0; i--)
+                for (int j = _items.GetLength(0) - 1; j >= 0; j--)
                 {
-                    if (_items[vertex, i] != 0 && !visited[i])
+                    if (_items[vertex, j] != 0 && !visited[j])
                     {
-                        stack.Push(i);
+                        stack.Push(j);
                     }
                 }
             }
@@ -85,7 +113,7 @@ internal class Graph
 
     public void DepthFirstSearchRecursive(Action<int> action)
     {
-        if (_items is null || _items.GetLength(1) == 0)
+        if (_items.GetLength(0) == 0)
         {
             return;
         }
@@ -94,20 +122,20 @@ internal class Graph
 
         while (Array.IndexOf(visited, false) >= 0)
         {
-            VisitingDepthFirstSearchRecursive(Array.IndexOf(visited, false), visited, action);
+            DepthFirstSearchRecursiveVisit(Array.IndexOf(visited, false), visited, action);
         }
     }
 
-    private void VisitingDepthFirstSearchRecursive(int vertex, bool[] visited, Action<int> action)
+    private void DepthFirstSearchRecursiveVisit(int vertex, bool[] visited, Action<int> action)
     {
         visited[vertex] = true;
         action(vertex);
 
-        for (int i = 0; i < _items.GetLength(1); i++)
+        for (int i = 0; i < _items.GetLength(0); i++)
         {
             if (_items[vertex, i] != 0 && !visited[i])
             {
-                VisitingDepthFirstSearchRecursive(i, visited, action);
+                DepthFirstSearchRecursiveVisit(i, visited, action);
             }
         }
     }
