@@ -1,5 +1,6 @@
 using TemperatureTask.Controller;
 using TemperatureTask.Model;
+using TemperatureTask.View;
 
 namespace TemperatureTask
 {
@@ -17,7 +18,7 @@ namespace TemperatureTask
 
             var view = new TemperatureForm();
             var model = new TemperatureModel(view);
-            var controller = new TemperatureController(model);  
+            var controller = new TemperatureController(model);
             view.Controller = controller;
 
             Application.Run(view);

@@ -5,20 +5,25 @@ namespace TemperatureTask.Model;
 
 public class TemperatureModel : IModel
 {
-    public event Action<double>? ResultSet;
+    public event Action<double> ConversionResultSet;
 
-    private readonly TemperatureForm _view;
+    private readonly IModelListener _listener;
 
-    public TemperatureModel(TemperatureForm view)
+    public TemperatureModel(IModelListener listener)
     {
-        _view = view;
+        if (listener is null)
+        {
+            throw new ArgumentNullException(nameof(listener));
+        }
+
+        _listener = listener;
+        ConversionResultSet += _listener.SetConversionResult;
     }
 
     public void ConvertTemperature(double temperature, IScale incomingScale, IScale outgoingScale)
     {
-        var result = incomingScale.Convert(temperature, outgoingScale);
+        var temperatureConversionResult = incomingScale.ConvertTo(temperature, outgoingScale);
 
-        ResultSet += _view.SetConversionResult;
-        ResultSet.Invoke(result);
+        ConversionResultSet.Invoke(temperatureConversionResult);
     }
 }

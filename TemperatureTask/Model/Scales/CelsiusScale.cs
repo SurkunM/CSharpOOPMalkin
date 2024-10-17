@@ -1,6 +1,6 @@
 ﻿namespace TemperatureTask.Model.Scales;
 
-public class Celsius : IScale
+public class CelsiusScale : IScale
 {
     private const string Name = "Цельсия";
 
@@ -10,19 +10,24 @@ public class Celsius : IScale
 
     private const double FahrenheitUnitChangeRatio = 1.8;
 
-    public double Convert(double temperature, IScale outgoingScale)
+    public double ConvertTo(double temperature, IScale outgoingScale)
     {
-        if (outgoingScale is Fahrenheit)
+        if (outgoingScale is FahrenheitScale)
         {
             return temperature * FahrenheitUnitChangeRatio + FahrenheitZeroCelsius;
         }
 
-        if (outgoingScale is Kelvin)
+        if (outgoingScale is KelvinScale)
         {
             return temperature + CelsiusAbsoluteZero;
         }
 
         return temperature;
+    }
+
+    public string GetResultScaleText()
+    {
+        return $"градусов {Name}";
     }
 
     public override string ToString()

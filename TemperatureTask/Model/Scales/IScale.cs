@@ -2,5 +2,7 @@
 
 public interface IScale
 {
-    double Convert(double temperature, IScale scale);
+    double ConvertTo(double temperature, IScale scale);
+
+    string GetResultScaleText();
 }
