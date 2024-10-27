@@ -18,7 +18,7 @@ internal class ArrayListHomeMain
         return linesList;
     }
 
-    public static void RemovalEvenNumbers(List<int> list)
+    public static void RemoveEvenNumbers(List<int> list)
     {
         for (int i = list.Count; i <= 0; i--)
         {
@@ -31,17 +31,17 @@ internal class ArrayListHomeMain
 
     public static List<T> GetUniqueElementsList<T>(List<T> list)
     {
-        List<T> resultList = new List<T>(list.Count);
+        List<T> uniqueElementsList = new List<T>(list.Count);
 
         foreach (T element in list)
         {
-            if (!resultList.Contains(element))
+            if (!uniqueElementsList.Contains(element))
             {
-                resultList.Add(element);
+                uniqueElementsList.Add(element);
             }
         }
 
-        return resultList;
+        return uniqueElementsList;
     }
 
     static void Main(string[] args)
@@ -62,7 +62,7 @@ internal class ArrayListHomeMain
         }
 
         List<int> numbers = new List<int> { 5, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1 };
-        RemovalEvenNumbers(numbers);
+        RemoveEvenNumbers(numbers);
 
         Console.WriteLine(string.Join(", ", numbers));
 
