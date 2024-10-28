@@ -17,12 +17,12 @@ internal class LambdasMain
     {
         List<Person> personsList = new List<Person>
         {
-            new ("Ivan", 34),
-            new ("Sergey", 28),
-            new ("Alexander", 17),
-            new ("Alina", 16),
-            new ("Natalya", 29),
-            new ("Ivan", 22)
+            new("Ivan", 34),
+            new("Sergey", 28),
+            new("Alexander", 17),
+            new("Alina", 16),
+            new("Natalya", 29),
+            new("Ivan", 22)
         };
 
         List<string> uniqueNamesList = personsList
@@ -36,7 +36,7 @@ internal class LambdasMain
             .Where(p => p.Age < 18)
             .ToList();
 
-        if (under18PersonsList.Count <= 0)
+        if (under18PersonsList.Count == 0)
         {
             Console.WriteLine("В данном списке нет людей младше 18");
         }
@@ -45,11 +45,11 @@ internal class LambdasMain
             Console.WriteLine("Средний возраст людей младше 18: {0}", under18PersonsList.Average(p => p.Age));
         }
 
-        Dictionary<string, double> averageAgesByName = personsList
+        Dictionary<string, double> averageAgesByNames = personsList
             .GroupBy(p => p.Name)
-            .ToDictionary(name => name.Key, age => age.Average(p => p.Age));
+            .ToDictionary(p => p.Key, p => p.Average(p => p.Age));
 
-        Console.WriteLine("Сгруппированный список сотрудников по именам и их средний возраст: {0}", string.Join(", ", averageAgesByName));
+        Console.WriteLine("Сгруппированный список сотрудников по именам и их средний возраст: {0}", string.Join(", ", averageAgesByNames));
 
         IEnumerable<Person> from18To45AgePersons = personsList
             .Where(p => p.Age >= 20 && p.Age <= 45)
