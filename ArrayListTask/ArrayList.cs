@@ -5,7 +5,7 @@ namespace ArrayListTask;
 
 internal class ArrayList<T> : IList<T>
 {
-    private T[]? _items;
+    private T[] _items;
 
     private int _modCount;
 
@@ -20,7 +20,7 @@ internal class ArrayList<T> : IList<T>
                 throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
             }
 
-            return _items![index];
+            return _items[index];
         }
 
         set
@@ -30,7 +30,7 @@ internal class ArrayList<T> : IList<T>
                 throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
             }
 
-            _items![index] = value;
+            _items[index] = value;
 
             _modCount++;
         }
@@ -61,7 +61,10 @@ internal class ArrayList<T> : IList<T>
 
     public bool IsReadOnly => false;
 
-    public ArrayList() { }
+    public ArrayList()
+    {
+        _items = [];
+    }
 
     public ArrayList(int capacity)
     {
@@ -80,7 +83,7 @@ internal class ArrayList<T> : IList<T>
             IncreaseCapacity();
         }
 
-        _items![Count] = item;
+        _items[Count] = item;
 
         Count++;
         _modCount++;
@@ -94,7 +97,7 @@ internal class ArrayList<T> : IList<T>
         }
         else
         {
-            Array.Resize(ref _items, Capacity * 2);
+            Capacity *= 2;
         }
     }
 
@@ -105,7 +108,7 @@ internal class ArrayList<T> : IList<T>
             return;
         }
 
-        Array.Clear(_items!, 0, Count);
+        Array.Clear(_items, 0, Count);
 
         _modCount++;
         Count = 0;
@@ -123,11 +126,6 @@ internal class ArrayList<T> : IList<T>
             throw new ArgumentNullException(nameof(array));
         }
 
-        if (_items is null)
-        {
-            throw new ArgumentNullException(nameof(_items));
-        }
-
         if (index < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" не может быть меньше нуля.");
@@ -143,21 +141,11 @@ internal class ArrayList<T> : IList<T>
 
     public int IndexOf(T item)
     {
-        if (_items is null)
-        {
-            throw new ArgumentNullException(nameof(_items));
-        }
-
         return Array.IndexOf(_items, item, 0, Count);
     }
 
     public void Insert(int index, T item)
     {
-        if (_items is null)
-        {
-            throw new ArgumentNullException(nameof(_items));
-        }
-
         if (index < 0 || index > Count)
         {
             throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
@@ -192,11 +180,6 @@ internal class ArrayList<T> : IList<T>
 
     public void RemoveAt(int index)
     {
-        if (_items is null)
-        {
-            throw new ArgumentNullException(nameof(_items));
-        }
-
         if (index < 0 || index >= Count)
         {
             throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
@@ -252,7 +235,7 @@ internal class ArrayList<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            stringBuilder.Append(this[i]).Append(separator);
+            stringBuilder.Append(_items[i]).Append(separator);
         }
 
         stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
@@ -282,7 +265,7 @@ internal class ArrayList<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            if (!Equals(this[i], list[i]))
+            if (!Equals(_items[i], list[i]))
             {
                 return false;
             }
@@ -298,9 +281,13 @@ internal class ArrayList<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            if (this[i] is not null)
+            if (_items[i] is null)
             {
-                hash = prime * hash + this[i]!.GetHashCode();
+                hash = prime * hash;
+            }
+            else
+            {
+                hash = prime * hash + _items[i]!.GetHashCode();
             }
         }
 
