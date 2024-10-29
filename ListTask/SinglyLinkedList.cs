@@ -33,7 +33,7 @@ internal class SinglyLinkedList<T>
         }
     }
 
-    public T GetFirstData()
+    public T GetFirst()
     {
         if (_head is null)
         {
@@ -43,7 +43,7 @@ internal class SinglyLinkedList<T>
         return _head.Data;
     }
 
-    public T? RemoveAt(int index)
+    public T RemoveAt(int index)
     {
         CheckIndex(index);
 
@@ -71,24 +71,21 @@ internal class SinglyLinkedList<T>
 
     private ListItem<T> GetListItem(int index)
     {
-        ListItem<T>? currentItem = _head;
+        ListItem<T> currentItem = _head!;
 
-        for (int i = 0; currentItem != null; currentItem = currentItem.Next, i++)
+        for (int i = 0; i != index; i++)
         {
-            if (index == i)
-            {
-                break;
-            }
+            currentItem = currentItem.Next!;
         }
 
-        return currentItem!;
+        return currentItem;
     }
 
-    public void Add(T item, int index)
+    public void Add(int index, T item)
     {
         if (index < 0 || index > Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count}.");
         }
 
         if (index == 0)
@@ -99,10 +96,9 @@ internal class SinglyLinkedList<T>
         }
 
         ListItem<T> previousItem = GetListItem(index - 1);
-        ListItem<T> currentItem = previousItem.Next!;
+        ListItem<T> addedItem = new ListItem<T>(item, previousItem.Next!);
 
-        currentItem = new ListItem<T>(item, currentItem);
-        previousItem.Next = currentItem;
+        previousItem.Next = addedItem;
 
         Count++;
     }
@@ -137,7 +133,7 @@ internal class SinglyLinkedList<T>
     {
         if (_head is null)
         {
-            throw new InvalidOperationException($"Данный список пуст.");
+            throw new InvalidOperationException("Данный список пуст.");
         }
 
         T removedData = _head.Data;
@@ -156,38 +152,38 @@ internal class SinglyLinkedList<T>
         }
 
         ListItem<T>? previousItem = null;
-        ListItem<T> currentItem = _head;
 
-        for (ListItem<T>? nextItem = currentItem.Next; nextItem != null; nextItem = currentItem.Next)
+        for (ListItem<T> currentItem = _head, nextItem = currentItem; currentItem != null; currentItem = nextItem)
         {
+            nextItem = nextItem.Next!;
             currentItem.Next = previousItem;
             previousItem = currentItem;
-            currentItem = nextItem;
         }
 
-        currentItem.Next = previousItem;
-        _head = currentItem;
+        _head = previousItem;
     }
 
     public SinglyLinkedList<T> Copy()
     {
-        SinglyLinkedList<T> resultSinglyLinkedList = new SinglyLinkedList<T>();
+        SinglyLinkedList<T> copySinglyLinkedList = new SinglyLinkedList<T>();
 
         if (_head is null)
         {
-            return resultSinglyLinkedList;
+            return copySinglyLinkedList;
         }
 
-        resultSinglyLinkedList.AddFirst(_head.Data);
+        copySinglyLinkedList.AddFirst(_head.Data);
 
-        for (ListItem<T>? currentItem = _head.Next, resultListItem, previousResultListItem = resultSinglyLinkedList._head;
-            currentItem != null;
-            currentItem = currentItem.Next, previousResultListItem!.Next = resultListItem, previousResultListItem = resultListItem)
+        for (ListItem<T>? currentItem = _head.Next, copyListItem, previousCopyListItem = copySinglyLinkedList._head;
+            currentItem != null; currentItem = currentItem.Next)
         {
-            resultListItem = new ListItem<T>(currentItem.Data);
+            copyListItem = new ListItem<T>(currentItem.Data);
+
+            previousCopyListItem!.Next = copyListItem;
+            previousCopyListItem = copyListItem;
         }
 
-        return resultSinglyLinkedList;
+        return copySinglyLinkedList;
     }
 
     public override string ToString()
