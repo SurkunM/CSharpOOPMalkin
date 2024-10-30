@@ -20,7 +20,7 @@ internal class ArrayListHomeMain
 
     public static void RemoveEvenNumbers(List<int> list)
     {
-        for (int i = list.Count; i <= 0; i--)
+        for (int i = list.Count - 1; i >= 0; i--)
         {
             if (list[i] % 2 == 0)
             {
