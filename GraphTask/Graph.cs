@@ -18,13 +18,7 @@ internal class Graph
 
         _items = new int[items.GetLength(0), items.GetLength(0)];
 
-        for (int i = 0; i < items.GetLength(0); i++)
-        {
-            for (int j = 0; j < items.GetLength(0); j++)
-            {
-                _items[i, j] = items[i, j];
-            }
-        }
+        Array.Copy(items, _items, items.Length);
     }
 
     public void BreadthFirstSearch(Action<int> action)
@@ -120,13 +114,18 @@ internal class Graph
 
         bool[] visited = new bool[_items.GetLength(0)];
 
-        while (Array.IndexOf(visited, false) >= 0)
+        for (int i = 0; i < visited.Length; i++)
         {
-            DepthFirstSearchRecursiveVisit(Array.IndexOf(visited, false), visited, action);
+            if (visited[i])
+            {
+                continue;
+            }
+
+            DepthFirstSearchRecursive(i, visited, action);
         }
     }
 
-    private void DepthFirstSearchRecursiveVisit(int vertex, bool[] visited, Action<int> action)
+    private void DepthFirstSearchRecursive(int vertex, bool[] visited, Action<int> action)
     {
         visited[vertex] = true;
         action(vertex);
@@ -135,7 +134,7 @@ internal class Graph
         {
             if (_items[vertex, i] != 0 && !visited[i])
             {
-                DepthFirstSearchRecursiveVisit(i, visited, action);
+                DepthFirstSearchRecursive(i, visited, action);
             }
         }
     }
