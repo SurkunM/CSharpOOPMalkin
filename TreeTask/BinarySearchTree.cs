@@ -6,7 +6,7 @@ internal class BinarySearchTree<T>
 {
     private TreeNode<T>? _root;
 
-    private readonly IComparer<T>? _comparer;
+    private readonly IComparer<T> _comparer;
 
     public int Count { get; private set; }
 
@@ -15,14 +15,16 @@ internal class BinarySearchTree<T>
         _comparer = Comparer<T>.Default;
     }
 
-    public BinarySearchTree(IComparer<T> comparer)
+    public BinarySearchTree(IComparer<T>? comparer)
     {
         if (comparer is null)
         {
             _comparer = Comparer<T>.Default;
         }
-
-        _comparer = comparer;
+        else
+        {
+            _comparer = comparer;
+        }
     }
 
     public void Add(T data)
@@ -39,7 +41,7 @@ internal class BinarySearchTree<T>
 
         while (true)
         {
-            if (_comparer!.Compare(currentNode.Data, data) > 0)
+            if (_comparer.Compare(currentNode.Data, data) > 0)
             {
                 if (currentNode.Left is not null)
                 {
@@ -78,7 +80,7 @@ internal class BinarySearchTree<T>
         }
 
         TreeNode<T> currentNode = _root;
-        int comparisonResult = _comparer!.Compare(currentNode.Data, data);
+        int comparisonResult = _comparer.Compare(currentNode.Data, data);
 
         while (comparisonResult != 0)
         {
@@ -122,13 +124,13 @@ internal class BinarySearchTree<T>
         TreeNode<T>? parentNode = null;
 
         bool isLeftNode = false;
-        int comparerResult = _comparer!.Compare(currentNode.Data, data);
+        int comparisonResult = _comparer.Compare(currentNode.Data, data);
 
-        while (comparerResult != 0)
+        while (comparisonResult != 0)
         {
             parentNode = currentNode;
 
-            if (comparerResult > 0)
+            if (comparisonResult > 0)
             {
                 if (currentNode.Left is not null)
                 {
@@ -153,23 +155,14 @@ internal class BinarySearchTree<T>
                 }
             }
 
-            comparerResult = _comparer.Compare(currentNode.Data, data);
+            comparisonResult = _comparer.Compare(currentNode.Data, data);
         }
 
-        if (currentNode.Left is null && currentNode.Right is null)
+        if (currentNode.Left is null || currentNode.Right is null)
         {
-            InsertNode(parentNode, null, isLeftNode);
-        }
-        else if (currentNode.Left is null || currentNode.Right is null)
-        {
-            if (currentNode.Left is null)
-            {
-                InsertNode(parentNode, currentNode.Right, isLeftNode);
-            }
-            else
-            {
-                InsertNode(parentNode, currentNode.Left, isLeftNode);
-            }
+            TreeNode<T>? childNode = currentNode.Left is null ? currentNode.Right : currentNode.Left;
+
+            AddNode(parentNode, childNode, isLeftNode);
         }
         else
         {
@@ -190,7 +183,7 @@ internal class BinarySearchTree<T>
 
             minLeftNode.Left = currentNode.Left;
 
-            InsertNode(parentNode, minLeftNode, isLeftNode);
+            AddNode(parentNode, minLeftNode, isLeftNode);
         }
 
         Count--;
@@ -198,7 +191,7 @@ internal class BinarySearchTree<T>
         return true;
     }
 
-    private void InsertNode(TreeNode<T>? parentNode, TreeNode<T>? currentNode, bool isLeftNode)
+    private void AddNode(TreeNode<T>? parentNode, TreeNode<T>? currentNode, bool isLeftNode)
     {
         if (parentNode is null)
         {
@@ -206,7 +199,7 @@ internal class BinarySearchTree<T>
         }
         else if (isLeftNode)
         {
-            parentNode.Left = currentNode;
+            parentNode.Left = currentNode;//
         }
         else
         {
@@ -273,10 +266,10 @@ internal class BinarySearchTree<T>
 
     public void DepthFirstSearchRecursive(Action<T> action)
     {
-        DepthFirstSearchRecursiveVisit(_root, action);
+        DepthFirstSearchRecursive(_root, action);
     }
 
-    private static void DepthFirstSearchRecursiveVisit(TreeNode<T>? node, Action<T> action)
+    private static void DepthFirstSearchRecursive(TreeNode<T>? node, Action<T> action)
     {
         if (node is null)
         {
@@ -285,8 +278,8 @@ internal class BinarySearchTree<T>
 
         action(node.Data);
 
-        DepthFirstSearchRecursiveVisit(node.Left, action);
-        DepthFirstSearchRecursiveVisit(node.Right, action);
+        DepthFirstSearchRecursive(node.Left, action);
+        DepthFirstSearchRecursive(node.Right, action);
     }
 
     public override string ToString()
