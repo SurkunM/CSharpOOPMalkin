@@ -47,15 +47,15 @@ internal class LambdasMain
 
         Dictionary<string, double> averageAgesByNames = personsList
             .GroupBy(p => p.Name)
-            .ToDictionary(p => p.Key, p => p.Average(p => p.Age));
+            .ToDictionary(g => g.Key, p => p.Average(g => g.Age));
 
         Console.WriteLine("Сгруппированный список сотрудников по именам и их средний возраст: {0}", string.Join(", ", averageAgesByNames));
 
-        IEnumerable<Person> from18To45AgePersons = personsList
+        IEnumerable<Person> from20To45AgePersons = personsList
             .Where(p => p.Age >= 20 && p.Age <= 45)
             .OrderByDescending(p => p.Age);
 
-        Console.WriteLine("Список сотрудников возраст которых от 20 до 45: {0}", string.Join(", ", from18To45AgePersons.Select(p => p.Name)));
+        Console.WriteLine("Список сотрудников возраст которых от 20 до 45: {0}", string.Join(", ", from20To45AgePersons.Select(p => p.Name)));
 
         Console.WriteLine();
         Console.Write("Введите количество элементов для которых нужно вычислить квадратные корни: ");
