@@ -15,20 +15,14 @@ internal class ArrayList<T> : IList<T>
     {
         get
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
-            }
+            CheckIndex(index);
 
             return _items[index];
         }
 
         set
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
-            }
+            CheckIndex(index);
 
             _items[index] = value;
 
@@ -38,15 +32,7 @@ internal class ArrayList<T> : IList<T>
 
     public int Capacity
     {
-        get
-        {
-            if (_items is null)
-            {
-                return 0;
-            }
-
-            return _items.Length;
-        }
+        get => _items.Length;
 
         set
         {
@@ -63,7 +49,7 @@ internal class ArrayList<T> : IList<T>
 
     public ArrayList()
     {
-        _items = [];
+        _items = new T[2];
     }
 
     public ArrayList(int capacity)
@@ -74,6 +60,14 @@ internal class ArrayList<T> : IList<T>
         }
 
         _items = new T[capacity];
+    }
+
+    private void CheckIndex(int index)
+    {
+        if (index < 0 || index >= Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
+        }
     }
 
     public void Add(T item)
@@ -148,7 +142,7 @@ internal class ArrayList<T> : IList<T>
     {
         if (index < 0 || index > Count)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
+            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count}.");
         }
 
         if (Count >= Capacity)
@@ -180,10 +174,7 @@ internal class ArrayList<T> : IList<T>
 
     public void RemoveAt(int index)
     {
-        if (index < 0 || index >= Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index), $"Индекс \"{index}\" находится за пределами границ списка от 0 до {Count - 1}.");
-        }
+        CheckIndex(index);
 
         Array.Copy(_items, index + 1, _items, index, Count - index - 1);
 
@@ -212,7 +203,7 @@ internal class ArrayList<T> : IList<T>
                 throw new InvalidOperationException($"Произошло изменение в элементах текущего списка за время обхода итератора.");
             }
 
-            yield return this[i];
+            yield return _items[i];
         }
     }
 
@@ -265,7 +256,7 @@ internal class ArrayList<T> : IList<T>
 
         for (int i = 0; i < Count; i++)
         {
-            if (!Equals(_items[i], list[i]))
+            if (!Equals(_items[i], list._items[i]))
             {
                 return false;
             }
