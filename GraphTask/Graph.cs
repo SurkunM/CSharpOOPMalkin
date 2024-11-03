@@ -2,34 +2,34 @@
 
 internal class Graph
 {
-    private readonly int[,] _items;
+    private readonly int[,] _adjacencyMatrix;
 
-    public Graph(int[,] items)
+    public Graph(int[,] adjacencyMatrix)
     {
-        if (items is null)
+        if (adjacencyMatrix is null)
         {
-            throw new ArgumentNullException(nameof(items));
+            throw new ArgumentNullException(nameof(adjacencyMatrix));
         }
 
-        if (items.GetLength(0) != items.GetLength(1))
+        if (adjacencyMatrix.GetLength(0) != adjacencyMatrix.GetLength(1))
         {
-            throw new ArgumentException("Матрица смежности должна быть квадратной.", nameof(items));
+            throw new ArgumentException("Матрица смежности должна быть квадратной.", nameof(adjacencyMatrix));
         }
 
-        _items = new int[items.GetLength(0), items.GetLength(0)];
+        _adjacencyMatrix = new int[adjacencyMatrix.GetLength(0), adjacencyMatrix.GetLength(0)];
 
-        Array.Copy(items, _items, items.Length);
+        Array.Copy(adjacencyMatrix, _adjacencyMatrix, adjacencyMatrix.Length);
     }
 
     public void BreadthFirstSearch(Action<int> action)
     {
-        if (_items.GetLength(0) == 0)
+        if (_adjacencyMatrix.GetLength(0) == 0)
         {
             return;
         }
 
         Queue<int> queue = new Queue<int>();
-        bool[] visited = new bool[_items.GetLength(0)];
+        bool[] visited = new bool[_adjacencyMatrix.GetLength(0)];
 
         for (int i = 0; i < visited.Length; i++)
         {
@@ -52,9 +52,9 @@ internal class Graph
                 action(vertex);
                 visited[vertex] = true;
 
-                for (int j = 0; j < _items.GetLength(1); j++)
+                for (int j = 0; j < _adjacencyMatrix.GetLength(1); j++)
                 {
-                    if (_items[vertex, j] != 0 && !visited[j])
+                    if (_adjacencyMatrix[vertex, j] != 0 && !visited[j])
                     {
                         queue.Enqueue(j);
                     }
@@ -65,13 +65,13 @@ internal class Graph
 
     public void DepthFirstSearch(Action<int> action)
     {
-        if (_items.GetLength(0) == 0)
+        if (_adjacencyMatrix.GetLength(0) == 0)
         {
             return;
         }
 
         Stack<int> stack = new Stack<int>();
-        bool[] visited = new bool[_items.GetLength(0)];
+        bool[] visited = new bool[_adjacencyMatrix.GetLength(0)];
 
         for (int i = 0; i < visited.Length; i++)
         {
@@ -94,9 +94,9 @@ internal class Graph
                 action(vertex);
                 visited[vertex] = true;
 
-                for (int j = _items.GetLength(0) - 1; j >= 0; j--)
+                for (int j = _adjacencyMatrix.GetLength(0) - 1; j >= 0; j--)
                 {
-                    if (_items[vertex, j] != 0 && !visited[j])
+                    if (_adjacencyMatrix[vertex, j] != 0 && !visited[j])
                     {
                         stack.Push(j);
                     }
@@ -107,12 +107,12 @@ internal class Graph
 
     public void DepthFirstSearchRecursive(Action<int> action)
     {
-        if (_items.GetLength(0) == 0)
+        if (_adjacencyMatrix.GetLength(0) == 0)
         {
             return;
         }
 
-        bool[] visited = new bool[_items.GetLength(0)];
+        bool[] visited = new bool[_adjacencyMatrix.GetLength(0)];
 
         for (int i = 0; i < visited.Length; i++)
         {
@@ -130,9 +130,9 @@ internal class Graph
         visited[vertex] = true;
         action(vertex);
 
-        for (int i = 0; i < _items.GetLength(0); i++)
+        for (int i = 0; i < _adjacencyMatrix.GetLength(0); i++)
         {
-            if (_items[vertex, i] != 0 && !visited[i])
+            if (_adjacencyMatrix[vertex, i] != 0 && !visited[i])
             {
                 DepthFirstSearchRecursive(i, visited, action);
             }
