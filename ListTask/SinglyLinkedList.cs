@@ -55,12 +55,12 @@ internal class SinglyLinkedList<T>
         ListItem<T> previousItem = GetListItem(index - 1);
         ListItem<T> currentItem = previousItem.Next!;
 
-        T currentData = currentItem.Data;
+        T removedData = currentItem.Data;
         previousItem.Next = currentItem.Next;
 
         Count--;
 
-        return currentData;
+        return removedData;
     }
 
     public void AddFirst(T item)
@@ -96,14 +96,12 @@ internal class SinglyLinkedList<T>
         }
 
         ListItem<T> previousItem = GetListItem(index - 1);
-        ListItem<T> addedItem = new ListItem<T>(item, previousItem.Next!);
-
-        previousItem.Next = addedItem;
+        previousItem.Next = new ListItem<T>(item, previousItem.Next);
 
         Count++;
     }
 
-    public bool Remove(T? item)
+    public bool Remove(T item)
     {
         for (ListItem<T>? currentItem = _head, previousItem = null;
             currentItem != null;
@@ -165,25 +163,28 @@ internal class SinglyLinkedList<T>
 
     public SinglyLinkedList<T> Copy()
     {
-        SinglyLinkedList<T> copySinglyLinkedList = new SinglyLinkedList<T>();
+        SinglyLinkedList<T> singlyLinkedListCopy = new SinglyLinkedList<T>();
 
         if (_head is null)
         {
-            return copySinglyLinkedList;
+            return singlyLinkedListCopy;
         }
 
-        copySinglyLinkedList.AddFirst(_head.Data);
+        singlyLinkedListCopy.AddFirst(_head.Data);
 
-        for (ListItem<T>? currentItem = _head.Next, copyListItem, previousCopyListItem = copySinglyLinkedList._head;
-            currentItem != null; currentItem = currentItem.Next)
+        ListItem<T> previousCopyListItem = singlyLinkedListCopy._head!;
+
+        for (ListItem<T>? currentItem = _head.Next; currentItem != null; currentItem = currentItem.Next)
         {
-            copyListItem = new ListItem<T>(currentItem.Data);
+            ListItem<T> copyListItem = new ListItem<T>(currentItem.Data);
 
-            previousCopyListItem!.Next = copyListItem;
+            previousCopyListItem.Next = copyListItem;
             previousCopyListItem = copyListItem;
+
+            singlyLinkedListCopy.Count++;
         }
 
-        return copySinglyLinkedList;
+        return singlyLinkedListCopy;
     }
 
     public override string ToString()
