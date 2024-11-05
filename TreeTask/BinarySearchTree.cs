@@ -17,14 +17,7 @@ internal class BinarySearchTree<T>
 
     public BinarySearchTree(IComparer<T>? comparer)
     {
-        if (comparer is null)
-        {
-            _comparer = Comparer<T>.Default;
-        }
-        else
-        {
-            _comparer = comparer;
-        }
+        _comparer = comparer ?? Comparer<T>.Default;
     }
 
     public void Add(T data)
@@ -162,7 +155,7 @@ internal class BinarySearchTree<T>
         {
             TreeNode<T>? childNode = currentNode.Left is null ? currentNode.Right : currentNode.Left;
 
-            AddNode(parentNode, childNode, isLeftNode);
+            ReplaceNode(parentNode, childNode, isLeftNode);
         }
         else
         {
@@ -183,7 +176,7 @@ internal class BinarySearchTree<T>
 
             minLeftNode.Left = currentNode.Left;
 
-            AddNode(parentNode, minLeftNode, isLeftNode);
+            ReplaceNode(parentNode, minLeftNode, isLeftNode);
         }
 
         Count--;
@@ -191,19 +184,19 @@ internal class BinarySearchTree<T>
         return true;
     }
 
-    private void AddNode(TreeNode<T>? parentNode, TreeNode<T>? currentNode, bool isLeftNode)
+    private void ReplaceNode(TreeNode<T>? parentNode, TreeNode<T>? insertNode, bool isLeftNode)
     {
         if (parentNode is null)
         {
-            _root = currentNode;
+            _root = insertNode;
         }
         else if (isLeftNode)
         {
-            parentNode.Left = currentNode;//
+            parentNode.Left = insertNode;
         }
         else
         {
-            parentNode.Right = currentNode;
+            parentNode.Right = insertNode;
         }
     }
 
