@@ -98,7 +98,7 @@ internal class Matrix
             throw new ArgumentNullException();
         }
 
-        return VectorsMatrix[0].GetSize();
+        return VectorsMatrix[0].Size;
     }
 
     public Vector GetRow(int rowIndex)
@@ -113,7 +113,7 @@ internal class Matrix
 
     public void SetRow(Vector vector, int rowIndex)
     {
-        if (vector.GetSize() != VectorsMatrix.GetLength(1))
+        if (vector.Size != VectorsMatrix.GetLength(1))
         {
             throw new IndexOutOfRangeException(nameof(rowIndex));
         }
@@ -132,7 +132,7 @@ internal class Matrix
 
         for (int i = 0; i < newColumn.Length; i++)
         {
-            newColumn[i] = VectorsMatrix[i].GetComponent(columnIndex);
+            newColumn[i] = VectorsMatrix[i][columnIndex];
         }
 
         return new Vector(newColumn);
@@ -148,7 +148,7 @@ internal class Matrix
 
             for (int j = 0; j < VectorsMatrix.GetLength(1); j++)
             {
-                tempMatrix[j] = VectorsMatrix[j].GetComponent(i);
+                tempMatrix[j] = VectorsMatrix[j][i];
             }
 
             vectors[i] = new Vector(tempMatrix);
@@ -174,13 +174,13 @@ internal class Matrix
 
         if (VectorsMatrix.GetLength(0) == 1)
         {
-            return VectorsMatrix[0].GetComponent(0);
+            return VectorsMatrix[0][0];
         }
 
         if (VectorsMatrix.GetLength(0) == 2)
         {
-            return VectorsMatrix[0].GetComponent(0) * VectorsMatrix[1].GetComponent(1) -
-                   VectorsMatrix[0].GetComponent(1) * VectorsMatrix[1].GetComponent(0);
+            return VectorsMatrix[0][0] * VectorsMatrix[1][1] -
+                   VectorsMatrix[0][1] * VectorsMatrix[1][0];
         }
 
         double determinant = 0;
@@ -192,13 +192,13 @@ internal class Matrix
         {
             for (int j = 0; j < newVectorsMatrix.GetLength(1); j++)
             {
-                newVectorsMatrix[i, j] = VectorsMatrix[i].GetComponent(j);
+                newVectorsMatrix[i, j] = VectorsMatrix[i][j];
             }
         }
 
         for (int i = 0; i < VectorsMatrix.GetLength(0); i++)
         {
-            determinant += Math.Pow(-1, i) * VectorsMatrix[row].GetComponent(i) * GetColumnDecomposition(newVectorsMatrix, row, i);
+            determinant += Math.Pow(-1, i) * VectorsMatrix[row][i] * GetColumnDecomposition(newVectorsMatrix, row, i);
         }
 
         return determinant;
@@ -250,7 +250,7 @@ internal class Matrix
 
     public Matrix MultiplyByVector(Vector columnVector)
     {
-        if (columnVector.GetSize() != VectorsMatrix.Length)
+        if (columnVector.Size != VectorsMatrix.Length)
         {
             throw new ArgumentException("Размер вектора не совпадает с размерами матрицы", nameof(columnVector));
         }
@@ -261,7 +261,7 @@ internal class Matrix
         {
             for (int j = 0; j < VectorsMatrix.Length; j++)
             {
-                newMatrix[i, 0] += VectorsMatrix[i].GetComponent(j) * columnVector.GetComponent(j);
+                newMatrix[i, 0] += VectorsMatrix[i][j] * columnVector[j];
             }
         }
 
@@ -277,12 +277,12 @@ internal class Matrix
 
         if (VectorsMatrix.Length != matrix.VectorsMatrix.Length || GetColumnSize() != matrix.GetColumnSize())
         {
-            throw new ArgumentException("Размерность матриц не свопадают");
+            throw new ArgumentException($"Размерности матриц {nameof(VectorsMatrix)} и {nameof(matrix)} не свопадают");
         }
 
         for (int i = 0; i < VectorsMatrix.Length; i++)
         {
-            VectorsMatrix[i].Adding(matrix.VectorsMatrix[i]);
+            VectorsMatrix[i].Add(matrix.VectorsMatrix[i]);
         }
     }
 
@@ -295,12 +295,12 @@ internal class Matrix
 
         if (VectorsMatrix.Length != matrix.VectorsMatrix.Length || GetColumnSize() != matrix.GetColumnSize())
         {
-            throw new ArgumentException("Размерность матриц не свопадают");
+            throw new ArgumentException($"Размерности матриц {nameof(VectorsMatrix)} и {nameof(matrix)} не свопадают");
         }
 
         for (int i = 0; i < VectorsMatrix.Length; i++)
         {
-            VectorsMatrix[i].Subtraction(matrix.VectorsMatrix[i]);
+            VectorsMatrix[i].Subtract(matrix.VectorsMatrix[i]);
         }
     }
 
@@ -318,7 +318,7 @@ internal class Matrix
 
         if (matrix1.VectorsMatrix.Length != matrix2.VectorsMatrix.Length || matrix1.GetColumnSize() != matrix2.GetColumnSize())
         {
-            throw new ArgumentException("Размерность матриц не свопадают");
+            throw new ArgumentException($"Размерности матриц {nameof(matrix1)} и {nameof(matrix2)} не свопадают");
         }
 
         Matrix newMatrix = new Matrix(matrix1.GetRowSize(), matrix1.GetColumnSize());
@@ -345,7 +345,7 @@ internal class Matrix
 
         if (matrix1.VectorsMatrix.Length != matrix2.VectorsMatrix.Length || matrix1.GetColumnSize() != matrix2.GetColumnSize())
         {
-            throw new ArgumentException("Размерность матриц не свопадают");
+            throw new ArgumentException($"Размерности матриц {nameof(matrix1)} и {nameof(matrix2)} не свопадают");
         }
 
         Matrix newMatrix = new Matrix(matrix1.GetRowSize(), matrix1.GetColumnSize());
@@ -372,7 +372,7 @@ internal class Matrix
 
         if (matrix1.VectorsMatrix.Length != matrix2.VectorsMatrix.Length || matrix1.GetColumnSize() != matrix2.GetColumnSize())
         {
-            throw new ArgumentException("Размерность матриц не свопадают");
+            throw new ArgumentException($"Размерности матриц {nameof(matrix1)} и {nameof(matrix2)} не свопадают");
         }
 
         double[,] newMatrix = new double[matrix1.VectorsMatrix.Length, matrix1.GetColumnSize()];
@@ -383,7 +383,7 @@ internal class Matrix
             {
                 for (int k = 0; k < matrix1.GetColumnSize(); k++)
                 {
-                    newMatrix[i, j] += matrix1.VectorsMatrix[i].GetComponent(k) * matrix2.VectorsMatrix[k].GetComponent(j);
+                    newMatrix[i, j] += matrix1.VectorsMatrix[i][k] * matrix2.VectorsMatrix[k][j];
                 }
             }
         }
