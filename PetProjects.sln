@@ -10,8 +10,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShapesTask", "ShapesTask\Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatrixTask", "MatrixTask\MatrixTask.csproj", "{E7A76AB6-F43B-48E8-96C8-3886CF13917E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayListHomeTask", "ArrayListHomeTask\ArrayListHomeTask.csproj", "{177C2747-7E47-4102-82EF-D4427865322F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArrayListTask", "ArrayListTask\ArrayListTask.csproj", "{7405CF9C-A67D-4EE1-866E-2C78F11CBC5B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HashTableTask", "HashTableTask\HashTableTask.csproj", "{DB7F96B5-2DAC-48C9-91EF-E08B1059A08B}"
@@ -56,10 +54,6 @@ Global
 		{E7A76AB6-F43B-48E8-96C8-3886CF13917E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7A76AB6-F43B-48E8-96C8-3886CF13917E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7A76AB6-F43B-48E8-96C8-3886CF13917E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{177C2747-7E47-4102-82EF-D4427865322F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{177C2747-7E47-4102-82EF-D4427865322F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{177C2747-7E47-4102-82EF-D4427865322F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{177C2747-7E47-4102-82EF-D4427865322F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7405CF9C-A67D-4EE1-866E-2C78F11CBC5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7405CF9C-A67D-4EE1-866E-2C78F11CBC5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7405CF9C-A67D-4EE1-866E-2C78F11CBC5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
