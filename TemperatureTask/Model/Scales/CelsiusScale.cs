@@ -1,6 +1,6 @@
 ﻿namespace TemperatureTask.Model.Scales;
 
-public class CelsiusScale : IScale
+public class CelsiusScale : IScale, IBaseScale
 {
     private const string Name = "Цельсия";
 
@@ -22,6 +22,11 @@ public class CelsiusScale : IScale
             return temperature + CelsiusAbsoluteZero;
         }
 
+        return temperature;
+    }
+
+    public double GetBaseScaleTemperature(double temperature)
+    {
         return temperature;
     }
 

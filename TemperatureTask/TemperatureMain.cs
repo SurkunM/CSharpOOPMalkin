@@ -16,10 +16,9 @@ namespace TemperatureTask
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            var view = new TemperatureForm();
-            var model = new TemperatureModel(view);
+            var model = new TemperatureModel();
             var controller = new TemperatureController(model);
-            view.Controller = controller;
+            var view = new TemperatureForm(controller);
 
             Application.Run(view);
         }

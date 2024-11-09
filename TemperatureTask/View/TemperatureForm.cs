@@ -1,66 +1,73 @@
 using TemperatureTask.Controller;
-using TemperatureTask.Model.Interfaces;
 using TemperatureTask.Model.Scales;
 using TemperatureTask.View.Interface;
 
 namespace TemperatureTask.View;
 
-public partial class TemperatureForm : Form, IView, IModelListener
+public partial class TemperatureForm : Form, IView
 {
-    public TemperatureController Controller { private get; set; } = default!;
+    public List<IScale> Scales { get; set; } = [];
 
-    private readonly List<IScale> _scales = [];
+    private IScale _incomingScale;
 
-    public TemperatureForm()
+    private IScale _outgoingScale;
+
+    private readonly TemperatureController _controller = default!;
+
+    public TemperatureForm(TemperatureController controller)
     {
         InitializeComponent();
 
-        _scales.Add(new CelsiusScale());
-        _scales.Add(new FahrenheitScale());
-        _scales.Add(new KelvinScale());
+        _controller = controller;
+        _controller.ModelListener.ConversionResultSet += SetConversionResult;
 
-        comboBoxIncomingScale.Items.AddRange([.. _scales]);
-        comboBoxOutgoingScale.Items.AddRange([.. _scales]);
+        Scales = _controller.GetScales();
 
-        comboBoxIncomingScale.SelectedItem = _scales.First();
-        comboBoxOutgoingScale.SelectedItem = _scales.Last();
+        comboBoxIncomingScale.Items.AddRange([.. Scales]);
+        comboBoxOutgoingScale.Items.AddRange([.. Scales]);
+
+        _incomingScale = Scales.First();
+        comboBoxIncomingScale.SelectedItem = _incomingScale;
+
+        _outgoingScale = Scales.Last();
+        comboBoxOutgoingScale.SelectedItem = _outgoingScale;
     }
 
-    public void ComboBoxIncomingScaleSelectedIndexChanged(object sender, EventArgs e)
+    public void SetIncomingScale(IScale incomingScale)
     {
-        comboBoxIncomingScale = (ComboBox)sender;
+        _incomingScale = incomingScale;
     }
 
-    public void ComboBoxOutgoingScaleSelectedIndexChanged(object sender, EventArgs e)
+    public void SetOutgoingScale(IScale outgoingScale)
     {
-        comboBoxOutgoingScale = (ComboBox)sender;
+        _outgoingScale = outgoingScale;
     }
 
-    public void TextBoxSetTemperatureValueTextChanged(object sender, EventArgs e)
+    public double GetTemperatureValue(string stringTemperature)
     {
-        textBoxSetTemperatureValue = (TextBox)sender;
+        return Convert.ToDouble(stringTemperature);
     }
 
-    public void ButtonConvertClick(object sender, EventArgs e)
+    public void SetConversionResult(double temperature)
+    {
+        labelResultValue.Text = $"{temperature} {_outgoingScale.GetResultScaleText()}";
+    }
+
+    public void ConvertTemperature()
     {
         try
         {
-            if (textBoxSetTemperatureValue is null)
+            if (_incomingScale is null)
             {
-                throw new ArgumentNullException(nameof(textBoxSetTemperatureValue));
+                throw new ArgumentNullException(nameof(_incomingScale));
             }
 
-            if (comboBoxIncomingScale.SelectedItem is null)
+            if (_outgoingScale is null)
             {
-                throw new ArgumentNullException(nameof(comboBoxIncomingScale.SelectedItem));
+                throw new ArgumentNullException(nameof(_outgoingScale));
             }
 
-            if (comboBoxOutgoingScale.SelectedItem is null)
-            {
-                throw new ArgumentNullException(nameof(comboBoxOutgoingScale.SelectedItem));
-            }
-
-            Controller.ConvertTemperature(Convert.ToDouble(textBoxSetTemperatureValue.Text), (IScale)comboBoxIncomingScale.SelectedItem, (IScale)comboBoxOutgoingScale.SelectedItem);
+            _controller.ConvertTemperature(GetTemperatureValue(textBoxSetTemperatureValue.Text), _incomingScale, _outgoingScale);
         }
         catch (FormatException)
         {
@@ -72,13 +79,59 @@ public partial class TemperatureForm : Form, IView, IModelListener
         }
     }
 
-    public void SetConversionResult(double temperature)
+    private void ComboBoxIncomingScaleSelectedIndexChanged(object sender, EventArgs e)
     {
+        comboBoxIncomingScale = (ComboBox)sender;
+
+        if (comboBoxIncomingScale is null)
+        {
+            throw new ArgumentNullException(nameof(comboBoxIncomingScale));
+        }
+
+        if (comboBoxIncomingScale.SelectedItem is null)
+        {
+            throw new ArgumentNullException(nameof(comboBoxIncomingScale.SelectedItem));
+        }
+
+        SetIncomingScale((IScale)comboBoxIncomingScale.SelectedItem);
+    }
+
+    private void ComboBoxOutgoingScaleSelectedIndexChanged(object sender, EventArgs e)
+    {
+        comboBoxOutgoingScale = (ComboBox)sender;
+
+        if (comboBoxOutgoingScale is null)
+        {
+            throw new ArgumentNullException(nameof(comboBoxOutgoingScale));
+        }
+
         if (comboBoxOutgoingScale.SelectedItem is null)
         {
             throw new ArgumentNullException(nameof(comboBoxOutgoingScale.SelectedItem));
         }
 
-        labelResultValue.Text = $"{temperature} {((IScale)comboBoxOutgoingScale.SelectedItem).GetResultScaleText()}";
+        SetOutgoingScale((IScale)comboBoxOutgoingScale.SelectedItem);
+    }
+
+    private void TextBoxSetTemperatureValueTextChanged(object sender, EventArgs e)
+    {
+        textBoxSetTemperatureValue = (TextBox)sender;
+
+        if (textBoxSetTemperatureValue is null)
+        {
+            throw new ArgumentNullException(nameof(textBoxSetTemperatureValue));
+        }
+
+        if (textBoxSetTemperatureValue.Text is null)
+        {
+            throw new ArgumentNullException(nameof(textBoxSetTemperatureValue.Text));
+        }
+
+        GetTemperatureValue(textBoxSetTemperatureValue.Text);
+    }
+
+    private void ButtonConvertClick(object sender, EventArgs e)
+    {
+        ConvertTemperature();
     }
 }

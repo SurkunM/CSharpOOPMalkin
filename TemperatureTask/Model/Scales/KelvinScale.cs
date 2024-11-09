@@ -24,9 +24,10 @@ public class KelvinScale : IScale
 
         return temperature;
     }
+
     public string GetResultScaleText()
     {
-        return $"{Name}";
+        return Name;
     }
 
     public override string ToString()

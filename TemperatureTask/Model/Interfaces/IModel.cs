@@ -2,7 +2,9 @@
 
 namespace TemperatureTask.Model.Interfaces;
 
-internal interface IModel
+public interface IModel
 {
+    public event Action<double> ConversionResultSet;
+
     void ConvertTemperature(double temperature, IScale incomingScale, IScale outgoingScale);
 }

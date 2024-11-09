@@ -1,12 +1,15 @@
-﻿namespace TemperatureTask.View.Interface;
+﻿using TemperatureTask.Model.Scales;
+using TemperatureTask.Model.Interfaces;
 
-internal interface IView
+namespace TemperatureTask.View.Interface;
+
+internal interface IView : IModelListener
 {
-    void ComboBoxIncomingScaleSelectedIndexChanged(object sender, EventArgs e);
+    void SetIncomingScale(IScale incomingScale);
 
-    void ComboBoxOutgoingScaleSelectedIndexChanged(object sender, EventArgs e);
+    void SetOutgoingScale(IScale outgoingScale);
 
-    void TextBoxSetTemperatureValueTextChanged(object sender, EventArgs e);
+    double GetTemperatureValue(string stringTemperature);
 
-    void ButtonConvertClick(object sender, EventArgs e);
+    void ConvertTemperature();
 }
