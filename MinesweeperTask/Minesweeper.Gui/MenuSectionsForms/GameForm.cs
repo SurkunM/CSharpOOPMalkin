@@ -3,7 +3,6 @@
 using Minesweeper.Gui.FieldComponents;
 using Minesweeper.Gui.FieldComponents.IFieldCell;
 using Minesweeper.Gui.MenuSectionsForms.MenuInterface;
-using Minesweeper.Gui.Properties;
 using Minesweeper.Logic.Model.FieldKeys;
 using Minesweeper.Logic.Model.Interface;
 using Minesweeper.Logic.Presenter;
@@ -12,7 +11,6 @@ using System.Windows.Forms;
 
 public partial class GameForm : Form, IMenuSectionForm, IFieldConfiguration, IField, IGame
 {
-
     private Button _currentCellButton = default!;
 
     private readonly Image _mineImage;
