@@ -12,8 +12,8 @@ internal class CsvMain
         const string doubleTabulation = "\t\t";
 
         string title = "HTML file";
-        string fileName = "Csv task";
-        string content = "Table";
+        // string fileName = "Csv task";
+        // string content = "Table";
         string charset = "UTF-8";
 
         bool isQuotesOpen = false;
@@ -29,7 +29,7 @@ internal class CsvMain
         writer.Write(title);
         writer.WriteLine("</title>");
 
-        writer.WriteLine($"{doubleTabulation}<meta name=\"{fileName}\" content=\"{content}\">");
+        // writer.WriteLine($"{doubleTabulation}<meta name=\"{fileName}\" content=\"{content}\">");
 
         writer.WriteLine("\t</head>");
         writer.WriteLine("\t<body>");
@@ -134,7 +134,14 @@ internal class CsvMain
     {
         try
         {
-            ConvertTextToCsv(args[0], args[1]);
+            if (args.Length < 2)
+            {
+                Console.WriteLine("File patch was not found");
+            }
+            else
+            {
+                ConvertTextToCsv(args[0], args[1]);
+            }
         }
         catch (IndexOutOfRangeException)
         {
