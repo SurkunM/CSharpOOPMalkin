@@ -49,24 +49,23 @@ public class GameLogic : IFieldConfiguration
 
     }
 
-    public void SetFlag(int row, int column)
+    public bool SetFlag(int row, int column)
     {
-        _field[row, column] += 10;
-
         if (CurrentMineCount > 0)
         {
+            _field[row, column] += 10;
             CurrentMineCount--;
+
+            return true;
         }
+
+        return false;
     }
 
     public void RemoveFlag(int row, int column)
     {
         _field[row, column] -= 10;
-
-        if (CurrentMineCount < _mineCount)
-        {
-            CurrentMineCount++;
-        }
+        CurrentMineCount++;
     }
 
     public bool HasCellFlag(int row, int column)

@@ -15,18 +15,6 @@ public class GamePresenter
         _viewGame = logicGame;
     }
 
-    public void SetFlag(Button button, int row, int column)
-    {
-        if (button.Text == "F")
-        {
-            return;
-        }
-
-        _gameLogic.IsMinedCell(row, column);
-
-        _viewGame.SetUnVisibleCell();
-    }
-
     public bool HasCellFlag(int row, int column)
     {
         return _gameLogic.HasCellFlag(row, column);
@@ -44,21 +32,26 @@ public class GamePresenter
         _viewGame.SetUnVisibleCell();
     }
 
-    public void ChangeCellFlag(Button button, int row, int column)
+    public void ChangeCellFlag(bool hasCellFlag, int row, int column)
     {
-        if (button.Text == "")
+        if (hasCellFlag)
         {
-            _gameLogic.SetFlag(row, column);
-
-            _viewGame.SetCellFlag();
+            _gameLogic.RemoveFlag(row, column);
+            _viewGame.RemoveCellFlag();
+            SetViewMinesCount();
         }
         else
         {
-            _gameLogic.RemoveFlag(row, column);
-
-            _viewGame.RemoveCellFlag();
+            if (_gameLogic.SetFlag(row, column))
+            {
+                _viewGame.SetCellFlag();
+                SetViewMinesCount();
+            }
         }
+    }
 
+    private void SetViewMinesCount()
+    {
         _viewGame.SetMinesCount(_gameLogic.CurrentMineCount);
     }
 }

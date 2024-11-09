@@ -17,6 +17,8 @@ public partial class GameForm : Form, IMenuSectionForm, IFieldConfiguration, IFi
 
     private readonly Image _flag;
 
+    private bool _hasCellFlag;
+
     private readonly int _rowCount;
 
     private readonly int _columnCount;
@@ -70,7 +72,9 @@ public partial class GameForm : Form, IMenuSectionForm, IFieldConfiguration, IFi
 
         if (e.Button == MouseButtons.Right)
         {
-            GamePresenter.ChangeCellFlag((Button)sender, row, column);
+            _hasCellFlag = _currentCellButton.Image is not null;
+
+            GamePresenter.ChangeCellFlag(_hasCellFlag, row, column);
 
             return;
         }
@@ -79,7 +83,6 @@ public partial class GameForm : Form, IMenuSectionForm, IFieldConfiguration, IFi
         {
             GamePresenter.OpenCell(row, column);
         }
-
     }
 
     public void SetUnVisibleCell()
@@ -112,7 +115,7 @@ public partial class GameForm : Form, IMenuSectionForm, IFieldConfiguration, IFi
             box.Image = _mineImage;
 
             panelGame.SetCellPosition(box, new TableLayoutPanelCellPosition(column, row));
-           // button.Image = _mineImage;
+            // button.Image = _mineImage;
         }
     }
 
@@ -123,7 +126,7 @@ public partial class GameForm : Form, IMenuSectionForm, IFieldConfiguration, IFi
             throw new ArgumentNullException(nameof(_currentCellButton));
         }
 
-        _currentCellButton.Text = "";
+        _currentCellButton.Image = null;
     }
 
     public void SetMinesCount(int count)
