@@ -51,6 +51,7 @@ public partial class GameForm : Form, IMenuSectionForm, IFieldConfiguration, IFi
         InitializePanel();
 
         ClientSize = new Size(panelGame.Width, panelGame.Height + panelGameElements.Height);
+        // test test
     }
 
     public void ButtonBackMenuClick(object sender, EventArgs e)
