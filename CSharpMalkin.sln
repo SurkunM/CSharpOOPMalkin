@@ -4,12 +4,6 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemperatureTask", "TemperatureTask\TemperatureTask.csproj", "{0D8AF61D-FD42-4804-8C76-51203067F3BA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MinesweeperTask", "MinesweeperTask", "{DA07480C-81D4-44A3-9C1D-790F88DE38E0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minesweeper.Gui", "MinesweeperTask\Minesweeper.Gui\Minesweeper.Gui.csproj", "{C39CEA92-357C-446C-AEA2-AE38B8DD6C53}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minesweeper.Logic", "MinesweeperTask\MInesweeper.Logic\Minesweeper.Logic.csproj", "{3E091CB2-C9F2-4C20-9E0D-54CDC4ECD6D9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,21 +14,9 @@ Global
 		{0D8AF61D-FD42-4804-8C76-51203067F3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D8AF61D-FD42-4804-8C76-51203067F3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D8AF61D-FD42-4804-8C76-51203067F3BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C39CEA92-357C-446C-AEA2-AE38B8DD6C53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C39CEA92-357C-446C-AEA2-AE38B8DD6C53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C39CEA92-357C-446C-AEA2-AE38B8DD6C53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C39CEA92-357C-446C-AEA2-AE38B8DD6C53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E091CB2-C9F2-4C20-9E0D-54CDC4ECD6D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E091CB2-C9F2-4C20-9E0D-54CDC4ECD6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E091CB2-C9F2-4C20-9E0D-54CDC4ECD6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E091CB2-C9F2-4C20-9E0D-54CDC4ECD6D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C39CEA92-357C-446C-AEA2-AE38B8DD6C53} = {DA07480C-81D4-44A3-9C1D-790F88DE38E0}
-		{3E091CB2-C9F2-4C20-9E0D-54CDC4ECD6D9} = {DA07480C-81D4-44A3-9C1D-790F88DE38E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3543266A-B5DC-4AD5-8ED2-4F344318C95D}
